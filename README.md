@@ -26,6 +26,7 @@
 - Conectar Banco
 - Entidade Pessoa (ID, Nome, Data Nasc, CPF)
 - Entidade Endereço (ID, personID, Street, Number, Neighborhood, City, UF, Country)
+- Entidade Endereço (ID, personID, Street, Number, Neighborhood, City, UF, Country)
 - Relacionar Pessoa e Endereço (1:n)
 - Listar Pessoas e Endereços
 - Atualizar Pessoa e Endereços
