@@ -54,6 +54,9 @@ public class Address {
     @Column(length = 15, nullable = false)
     private String country;
 
+    // public Address(AddressDTO.AddressDTOBuilder address) {
+    //     BeanUtils.copyProperties(address, this);
+    // }
     public Address(AddressDTO address) {
         // this.personID = address.getPersonID();
         this.zipCode = address.getZipCode();

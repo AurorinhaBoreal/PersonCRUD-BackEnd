@@ -52,16 +52,11 @@ public class Person {
     @NotNull(message = "Informe uma data válida!")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "personID", cascade = CascadeType.PERSIST) // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
-    @Valid // VERIFICAR SE VÁLIDO OS ATRIBUTOS DO ENDEREÇO
-    private List<Address> address = new ArrayList<>();
+    @OneToMany(mappedBy = "personID") // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
+    private List<Address> address;
 
-
-    public Person(PersonDTO person) {
-        this.firstName = person.getFirstName();
-        this.lastName = person.getLastName();
-        this.cpf = person.getCpf();
-        this.birthDate = person.getBirthDate();
-        this.address.add(new Address(person.getAddress()));
-    }
+    // Por meio do BeanUtils que copia os atributos do PersonBuilder, ele permite fazermos a conversão de DTO pra Entity
+    // public Person(PersonDTO.PersonDTOBuilder person) {
+    //     BeanUtils.copyProperties(person, this);
+    // }
 }
