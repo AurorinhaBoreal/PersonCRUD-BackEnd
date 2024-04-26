@@ -42,10 +42,10 @@
 - Paginação da Lista de Pessoas
  
 US's - MVP
-- [US-001] Como usuário, quero me cadastrar
-  - [US-001.1] Criar Entidade Pessoa
-  - [US-001.2] Criar Entidade Endereço
-  - [US-001.3] Inserir Pessoa com Endereço no Banco
+- 🚧 [US001] Como usuário, quero me cadastrar
+  - ✅ [US001-1] Criar Entidade Pessoa
+  - ✅ [US-001-2] Criar Entidade Endereço
+  - 🚧 [US-001-3] Inserir Pessoa com Endereço no Banco
 - Como usuário, quero poder vincular um ou mais endereços a minha pessoa
 - Como usuário, quero poder atualizar os dados da minha pessoa
 - Como usuário, quero poder atualizar os dados dos meus endereços
