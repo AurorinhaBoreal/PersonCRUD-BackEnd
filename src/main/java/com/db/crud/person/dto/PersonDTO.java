@@ -3,49 +3,46 @@ package com.db.crud.person.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.BeanUtils;
 
-import jakarta.validation.Valid;
+import com.db.crud.person.entity.Address;
+// import com.db.crud.person.entity.Person.PersonBuilder;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Getter;
 
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonDTO {
 
-    @NotBlank(message = "Primeiro nome não pode ser vazio")
-    // @JsonProperty(value = "firstName")
+    @NotBlank(message = "Primeiro nome não ser vazio")
     private String firstName;
 
     @NotBlank(message = "Último nome não pode ser vazio")
-    // @JsonProperty(value = "lastName")
     private String lastName;
 
     @NotBlank(message = "Informe um CPF!")
-    @Size(min=10, max = 11, message = "CPF inválido!")
-    // @JsonProperty(value = "cpf")
+    @Size(min=10, message = "CPF inválido!")
     private String cpf;
 
     @NotNull(message = "Informe uma data válida!")
-    // @JsonProperty(value = "birthDate")
     private LocalDate birthDate;
 
-    
-    // @JsonProperty(value = "address")
-    @NotNull(message = "Informe um endereço válido!")
-    @Valid
-    private AddressDTO address;
+    @NotEmpty(message = "Informe um endereço válido!")
+    private List<Address> address;
 
-    @Override
-    public String toString() {
-        return "CPF: "+this.cpf+" | Nome: "+this.firstName+" "+this.lastName+" | Data de Nascimento: "+this.birthDate+" | Endereço: "+this.address.toString();
-    }
-    
+    // Por meio do BeanUtils que copia os atributos do PersonDTO, ele permite fazermos a conversão de Entity para DTO
+    // public PersonDTO(PersonBuilder person) {
+    //     BeanUtils.copyProperties(person, this);
+    // }
 }
