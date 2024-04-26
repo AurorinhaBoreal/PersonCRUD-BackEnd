@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -16,10 +18,15 @@ public class Address {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "address_id")
     private Long ID;
 
-    @Column(nullable = false)
-    private Long personID;
+    @ManyToOne()
+    @JoinColumn(name = "person_id")
+    private Person personID;
+
+    @Column(name = "zip_code", length = 10, nullable = false)
+    private String zipCode;
 
     @Column(length = 25, nullable = false)
     private String street;
@@ -39,8 +46,9 @@ public class Address {
     @Column(length = 15, nullable = false)
     private String country;
 
-    public Address(Long personID, String street, String number, String neighborhood, String city, String UF, String country) {
+    public Address(Person personID, String zipCode, String street, String number, String neighborhood, String city, String UF, String country) {
         this.personID = personID;
+        this.zipCode =
         this.street = street;
         this.number = number;
         this.neighborhood = neighborhood;
@@ -59,7 +67,7 @@ public class Address {
         return ID;
     }
 
-    public Long getPersonID() {
+    public Person getPersonID() {
         return personID;
     }
 

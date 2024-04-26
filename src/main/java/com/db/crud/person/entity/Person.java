@@ -1,12 +1,15 @@
 package com.db.crud.person.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -18,6 +21,7 @@ public class Person {
     
     @Id // Indica o atributo como um ID
     @GeneratedValue(strategy=GenerationType.IDENTITY) // Define o tipo de geração do ID
+    @Column(name = "person_id")
     private Long ID;
 
     @Column(length=20, nullable = false) // Define o limite de caracteres como 20 e não permite ser null
@@ -31,6 +35,9 @@ public class Person {
 
     @Column
     private LocalDate birthDate;
+
+    @OneToMany(mappedBy = "personID") // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
+    private List<Address> address;
 
     public Person(String firstName, String lastName, String cpf, LocalDate birthDate) {
         this.firstName = firstName;
