@@ -3,20 +3,33 @@ package com.db.crud.person.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
+
+import com.db.crud.person.dto.PersonDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity // Define a classe como uma Entidade JPA
 @Table(name = "tbl_person") // Define "tbl_person" como o nome da tabela
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // Criamos esse construtor somente por causa do JPA
+@AllArgsConstructor(access = AccessLevel.PUBLIC) // Cria um construtor para a criação da classe Person com todos os atributos
+@Builder // Cria por baixo dos panos construtores separados para cada atributo, facilitando na hora da construção
+@Getter // Cria automaticamente os getters para todos os atributos da classe
+@Setter // Cria automaticamente os setters para todos os atributos da classe
+@ToString
 public class Person {
     
     @Id // Indica o atributo como um ID
@@ -39,32 +52,8 @@ public class Person {
     @OneToMany(mappedBy = "personID") // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
     private List<Address> address;
 
-    public Person(String firstName, String lastName, String cpf, LocalDate birthDate) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.cpf = cpf;
-        this.birthDate = birthDate;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("PERSON || ID: %d | FirstName: %s | LastName: %s | CPF: %s | BirthDate: %s", 
-            ID, firstName, lastName, cpf, birthDate);
-    }
-
-    public Long getID() {
-        return ID;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getCPF() {
-        return cpf;
+    // Por meio do BeanUtils que copia os atributos do PersonBuilder, ele permite fazermos a conversão de DTO pra Entity
+    public Person(PersonDTO.PersonDTOBuilder person) {
+        BeanUtils.copyProperties(person, this);
     }
 }
