@@ -25,7 +25,7 @@
 - Container Docker
 - Conectar Banco
 - Entidade Pessoa (ID, Nome, Data Nasc, CPF)
-- Entidade Endereço (ID, ID_pessoa, Rua, Número, Logradouro, Cidade, Estado, Country)
+- Entidade Endereço (ID, personID, Street, Number, Neighborhood, City, UF, Country)
 - Relacionar Pessoa e Endereço (1:n)
 - Listar Pessoas e Endereços
 - Atualizar Pessoa e Endereços
@@ -42,7 +42,10 @@
 - Paginação da Lista de Pessoas
  
 US's - MVP
-- Como usuário, quero cadastrar uma pessoa ao banco
+- 🚧 [US001] Como usuário, quero me cadastrar
+  - ✅ [US001-1] Criar Entidade Pessoa
+  - ✅ [US-001-2] Criar Entidade Endereço
+  - 🚧 [US-001-3] Inserir Pessoa com Endereço no Banco
 - Como usuário, quero poder vincular um ou mais endereços a minha pessoa
 - Como usuário, quero poder atualizar os dados da minha pessoa
 - Como usuário, quero poder atualizar os dados dos meus endereços
