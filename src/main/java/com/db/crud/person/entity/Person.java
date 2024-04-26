@@ -53,7 +53,7 @@ public class Person {
     private List<Address> address;
 
     // Por meio do BeanUtils que copia os atributos do PersonBuilder, ele permite fazermos a conversão de DTO pra Entity
-    public Person(PersonDTO.PersonDTOBuilder person) {
-        BeanUtils.copyProperties(person, this);
-    }
+    // public Person(PersonDTO.PersonDTOBuilder person) {
+    //     BeanUtils.copyProperties(person, this);
+    // }
 }

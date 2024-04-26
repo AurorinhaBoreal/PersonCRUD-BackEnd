@@ -60,7 +60,7 @@ public class Address {
     @Column(length = 15, nullable = false)
     private String country;
 
-    public Address(AddressDTO.AddressDTOBuilder address) {
-        BeanUtils.copyProperties(address, this);
-    }
+    // public Address(AddressDTO.AddressDTOBuilder address) {
+    //     BeanUtils.copyProperties(address, this);
+    // }
 }
