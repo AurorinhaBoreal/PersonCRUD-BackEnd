@@ -39,7 +39,7 @@ public class PersonDTO {
 
     @NotEmpty(message = "Informe um endereço válido!")
     @JsonProperty(value = "address")
-    private List<AddressDTO> address;
+    private AddressDTO address;
 
     @Override
     public String toString() {
