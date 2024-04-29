@@ -21,7 +21,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "tbl_adress")
+@Table(name = "tbl_address")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -60,7 +60,4 @@ public class Address {
     @Column(length = 15, nullable = false)
     private String country;
 
-    // public Address(AddressDTO.AddressDTOBuilder address) {
-    //     BeanUtils.copyProperties(address, this);
-    // }
 }

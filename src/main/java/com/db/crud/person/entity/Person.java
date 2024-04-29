@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.cglib.core.Local;
 
 import com.db.crud.person.dto.PersonDTO;
 
@@ -32,6 +33,13 @@ import lombok.ToString;
 @ToString
 public class Person {
     
+    public Person(String firstName, String lastName, String cpf, LocalDate birthDate) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.cpf = cpf;
+        this.birthDate = birthDate;
+    }
+
     @Id // Indica o atributo como um ID
     @GeneratedValue(strategy=GenerationType.IDENTITY) // Define o tipo de geração do ID
     @Column(name = "person_id")
@@ -52,8 +60,4 @@ public class Person {
     @OneToMany(mappedBy = "personID") // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
     private List<Address> address;
 
-    // Por meio do BeanUtils que copia os atributos do PersonBuilder, ele permite fazermos a conversão de DTO pra Entity
-    // public Person(PersonDTO.PersonDTOBuilder person) {
-    //     BeanUtils.copyProperties(person, this);
-    // }
 }
