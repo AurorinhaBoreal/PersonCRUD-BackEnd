@@ -1,5 +1,7 @@
 package com.db.crud.person.entity;
 
+import java.util.List;
+
 import com.db.crud.person.dto.AddressDTO;
 
 import jakarta.persistence.Column;
@@ -14,7 +16,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -22,8 +23,11 @@ import lombok.ToString;
 @Table(name = "tbl_address")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Data
+@Builder
+@Getter
+@ToString
 public class Address {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,5 +58,16 @@ public class Address {
 
     @Column(length = 15, nullable = false)
     private String country;
+
+    public Address(AddressDTO address) {
+        // this.personID = address.getPersonID();
+        this.zipCode = address.getZipCode();
+        this.street = address.getStreet();
+        this.number = address.getNumber();
+        this.neighborhood = address.getNeighborhood();
+        this.city = address.getCity();
+        this.UF = address.getUF();
+        this.country = address.getCountry();
+    }
 
 }
