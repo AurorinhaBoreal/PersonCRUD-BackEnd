@@ -1,9 +1,6 @@
 package com.db.crud.person.entity;
 
 import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.beans.BeanUtils;
 
 import com.db.crud.person.dto.PersonDTO;
 
@@ -31,13 +28,6 @@ import lombok.ToString;
 @Setter // Cria automaticamente os setters para todos os atributos da classe
 @ToString
 public class Person {
-    
-    public Person(String firstName, String lastName, String cpf, LocalDate birthDate) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.cpf = cpf;
-        this.birthDate = birthDate;
-    }
 
     @Id // Indica o atributo como um ID
     @GeneratedValue(strategy=GenerationType.IDENTITY) // Define o tipo de geração do ID
@@ -57,6 +47,14 @@ public class Person {
     private LocalDate birthDate;
 
     @OneToMany(mappedBy = "personID") // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
-    private List<Address> address;
+    private Address address;
 
+
+    public Person(PersonDTO person) {
+        this.firstName = person.getFirstName();
+        this.lastName = person.getLastName();
+        this.cpf = person.getCpf();
+        this.birthDate = person.getBirthDate();
+        this.address = new Address(person.getAddress());
+    }
 }

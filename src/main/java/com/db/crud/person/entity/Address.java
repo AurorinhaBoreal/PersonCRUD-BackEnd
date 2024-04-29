@@ -1,6 +1,6 @@
 package com.db.crud.person.entity;
 
-import org.springframework.beans.BeanUtils;
+import java.util.List;
 
 import com.db.crud.person.dto.AddressDTO;
 
@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -26,10 +25,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @Getter
-@Setter
 @ToString
 public class Address {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
@@ -59,5 +57,16 @@ public class Address {
 
     @Column(length = 15, nullable = false)
     private String country;
+
+    public Address(AddressDTO address) {
+        // this.personID = address.getPersonID();
+        this.zipCode = address.getZipCode();
+        this.street = address.getStreet();
+        this.number = address.getNumber();
+        this.neighborhood = address.getNeighborhood();
+        this.city = address.getCity();
+        this.UF = address.getUF();
+        this.country = address.getCountry();
+    }
 
 }
