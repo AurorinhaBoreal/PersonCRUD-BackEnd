@@ -1,21 +1,25 @@
 package com.db.crud.person.dto;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressDTO {
     
+    // Isso talvez dê bo
     @NotNull(message = "O ID da pessoa nao pode ser nulo!")
     @JsonProperty(value = "personID")
     private Integer personID;
