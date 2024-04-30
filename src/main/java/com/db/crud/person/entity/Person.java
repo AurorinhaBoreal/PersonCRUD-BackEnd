@@ -1,9 +1,12 @@
 package com.db.crud.person.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.db.crud.person.dto.PersonDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,8 +20,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity // Define a classe como uma Entidade JPA
 @Table(name = "tbl_person") // Define "tbl_person" como o nome da tabela
@@ -45,8 +46,9 @@ public class Person {
     @NotNull(message = "Informe uma data válida!")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "personID") // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
-    private Address address;
+    @OneToMany(mappedBy = "personID", cascade = CascadeType.PERSIST) // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
+    @Valid // VERIFICAR SE VÁLIDO OS ATRIBUTOS DO ENDEREÇO
+    private List<Address> address = new ArrayList<>();
 
 
     public Person(PersonDTO person) {
@@ -54,6 +56,6 @@ public class Person {
         this.lastName = person.getLastName();
         this.cpf = person.getCpf();
         this.birthDate = person.getBirthDate();
-        this.address = new Address(person.getAddress());
+        this.address.add(new Address(person.getAddress()));
     }
 }

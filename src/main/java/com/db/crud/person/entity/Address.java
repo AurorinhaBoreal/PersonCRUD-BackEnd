@@ -1,7 +1,5 @@
 package com.db.crud.person.entity;
 
-import java.util.List;
-
 import com.db.crud.person.dto.AddressDTO;
 
 import jakarta.persistence.Column;
@@ -16,16 +14,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "tbl_address")
 @Table(name = "tbl_address")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
-@Getter
-@ToString
+@Data
 public class Address {
 
 
