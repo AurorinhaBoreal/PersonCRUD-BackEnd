@@ -56,6 +56,5 @@ public class Person {
         this.lastName = person.getLastName();
         this.cpf = person.getCpf();
         this.birthDate = person.getBirthDate();
-        this.address.add(new Address(person.getAddress()));
     }
 }
