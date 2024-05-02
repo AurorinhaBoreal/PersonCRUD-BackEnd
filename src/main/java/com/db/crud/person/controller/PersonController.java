@@ -4,12 +4,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.db.crud.person.dto.PersonDTO;
 import com.db.crud.person.entity.Person;
-import com.db.crud.person.repository.PersonRepository;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.db.crud.person.exception.CreatePersonException;
+import com.db.crud.person.service.PersonService;
 
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,24 +18,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.List;
 
 
 @RestController
 @RequestMapping("/person")
+@Validated
 public class PersonController {
-    Logger logger = Logger.getLogger(PersonController.class.getName());
+    private Logger logger = Logger.getLogger(PersonController.class.getName());
 
     @Autowired // Injeção de Dependências - Injetando a Person Repository na Controller
-    private PersonRepository repository;
+    private PersonService service;
     
     @GetMapping("/list")
-    public void listPersons() {
-
+    public List<Person> listPersons() {
+        return service.list();
     }
 
     @PostMapping("/create")
     public void createUser(@RequestBody @Valid PersonDTO person) {
-        repository.save(new Person(person));
-        logger.log(Level.INFO, "O Corpo da pessoa: \n"+person);
+        service.verifyCPF(person.getCpf());
+        service.create(new Person(person));
     }
 }
