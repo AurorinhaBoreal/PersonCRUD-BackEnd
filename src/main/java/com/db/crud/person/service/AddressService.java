@@ -8,36 +8,63 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.db.crud.person.controller.PersonController;
+import com.db.crud.person.dto.AddressDTO;
 import com.db.crud.person.entity.Address;
+import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreateAddressException;
 import com.db.crud.person.repository.AddressRepository;
+import com.db.crud.person.repository.PersonRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class AddressService {
     
     private Logger logger = Logger.getLogger(PersonController.class.getName());
 
     @Autowired
-    AddressRepository repository;
+    AddressRepository repositoryA;
+
+    @Autowired
+    PersonRepository repositoryP;
 
     public List<Address> list() {
-        return repository.findAll();
+        return repositoryA.findAll();
     }
 
-    public void create(Address address) {
+    
+    public Address create(AddressDTO addressDTO, Long personID) {
         try {
-            repository.save(address);
-            logger.log(Level.INFO, "Endereço criado com sucesso, Endereço: "+address);
+            Address address = new Address(addressDTO);
+            assignAddress(address, personID);
+
+            if (address.isMainAddress() == true) verifyMainAddress(address, personID);
+
+            repositoryA.save(address);
+            
+            return address;
         } catch (Exception e) {
             throw new CreateAddressException("Não foi possivel criar o endereço!");
         }
     }
 
-    public void assign(Long personID) {
+    public void assignAddress(Address address, Long personID) {
         try {
-            
+            Person person = repositoryP.findById(personID).get();
+            address.setPersonID(person);
         } catch (Exception e) {
-            // TODO: handle exception
+            throw new CreateAddressException("Não foi possivel vincular o endereço a pessoa!");
         }
+    }
+
+    public void verifyMainAddress(Address address, Long personID) {
+        Person person = repositoryP.findById(personID).get();
+
+        List<Address> addresses = person.getAddress();
+
+        addresses.forEach((element) -> {
+            if (element.isMainAddress() == true) throw new CreateAddressException("Ja existe um endereço principal!");
+        });
     }
 }
