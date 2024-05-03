@@ -2,7 +2,6 @@ package com.db.crud.person.entity;
 
 import com.db.crud.person.dto.AddressDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,7 +34,6 @@ public class Address {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     @JsonBackReference
-    // @JsonIgnore
     private Person personID;
 
     @Column(name = "zip_code", length = 12, nullable = false)

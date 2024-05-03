@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.db.crud.person.dto.PersonDTO;
 import com.db.crud.person.entity.Person;
-import com.db.crud.person.exception.CreatePersonException;
 import com.db.crud.person.service.PersonService;
 
 import jakarta.validation.Valid;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.List;
 
 
