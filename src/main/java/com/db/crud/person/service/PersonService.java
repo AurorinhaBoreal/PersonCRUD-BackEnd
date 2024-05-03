@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.db.crud.person.controller.PersonController;
+import com.db.crud.person.dto.PersonDTO;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreatePersonException;
+import com.db.crud.person.exception.UpdatePersonException;
 import com.db.crud.person.repository.PersonRepository;
 
 @Service
@@ -30,13 +32,30 @@ public class PersonService {
         }
     }
 
-    public void create(Person person) {
+    public Person create(Person person) {
         try {
             repository.save(person);
             logger.log(Level.INFO, "Pessoa criada com sucesso. Pessoa: "+person);
+            return person;
         } catch (Exception e) {
             throw new CreatePersonException("Não foi possivel criar a pessoa!");
         }
+    }
+
+    public Person update(PersonDTO personUpdate, Long personID) {
+        try {
+            Person personOriginal = repository.findById(personID).get();
+
+            personOriginal.setFirstName(personUpdate.getFirstName());
+            personOriginal.setLastName(personUpdate.getLastName());
+            personOriginal.setCpf(personUpdate.getCpf());
+            personOriginal.setBirthDate(personUpdate.getBirthDate());
+            repository.save(personOriginal);
+            return personOriginal;
+        } catch (Exception e) {
+            throw new UpdatePersonException("Não foi possivel atualizar os dados de Pessoa");
+        }
+        
     }
 
 }
