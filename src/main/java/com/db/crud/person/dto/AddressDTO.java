@@ -1,8 +1,15 @@
 package com.db.crud.person.dto;
 
 
+import com.db.crud.person.entity.Person;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,46 +22,44 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressDTO {
-    
-    // Isso talvez dê bo
-    @NotNull(message = "O ID da pessoa nao pode ser nulo!")
-    @JsonProperty(value = "personID")
-    private Integer personID;
 
     @NotBlank(message = "Informe um código postal (CEP)")
     @Size(min = 7, max = 12, message = "Informe um código postal válido")
-    @JsonProperty(value = "zipCode")
     private String zipCode;
 
     @NotBlank(message = "Informe uma rua!")
-    @JsonProperty(value = "street")
     private String street;
 
     @NotBlank(message = "Informe um número!")
-    @JsonProperty(value = "number")
     private String number;
 
-    @JsonProperty(value = "complement")
     private String complement;
 
     @NotBlank(message = "Informe um logradouro!")
-    @JsonProperty(value = "neighborhood")
     private String neighborhood;
 
     @NotBlank(message = "Informe uma cidade!")
-    @JsonProperty(value = "city")
     private String city;
 
     @NotBlank(message = "Informe uma sigla para o estado!")
-    @Size(min = 2, max = 2, message = "Sigla inválida!")
-    @JsonProperty(value = "UF")
-    private String UF;
+    // @Size(min = 2, max = 2, message = "Sigla inválida!")
+    private String uf;
 
     @NotBlank(message = "Informe um país!")
-    @JsonProperty(value = "country")
     private String country;
 
+    @NotNull(message = "Especifique se é o endereço principal ou não")
+    private boolean mainAddress;
+
     public String toString() {
-        return "Código Postal: "+this.zipCode+" | Rua: "+this.street+" | Numero: "+this.number+" | Complemento: "+this.complement+" | Bairro: "+this.neighborhood+" | Cidade: "+this.city+" | UF: "+this.UF+" | País: "+this.country;
+        return "Código Postal: "+this.zipCode
+            +" | Rua: "+this.street
+            +" | Numero: "+this.number
+            +" | Complemento: "+this.complement
+            +" | Bairro: "+this.neighborhood
+            +" | Cidade: "+this.city
+            +" | uf: "+this.uf
+            +" | País: "+this.country
+            +" | Principal: "+this.mainAddress;
     }
 }
