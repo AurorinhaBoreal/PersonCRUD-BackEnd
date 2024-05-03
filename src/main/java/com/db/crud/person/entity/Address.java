@@ -1,7 +1,10 @@
 package com.db.crud.person.entity;
 
 import com.db.crud.person.dto.AddressDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,8 +32,10 @@ public class Address {
     @Column(name = "address_id")
     private Long ID;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
+    @JsonBackReference
+    // @JsonIgnore
     private Person personID;
 
     @Column(name = "zip_code", length = 12, nullable = false)
@@ -49,20 +54,23 @@ public class Address {
     private String city;
 
     @Column(length = 2, nullable = false)
-    private String UF;
+    private String uf;
 
     @Column(length = 15, nullable = false)
     private String country;
 
+    @Column(nullable = false)
+    private boolean mainAddress;
+
     public Address(AddressDTO address) {
-        // this.personID = address.getPersonID();
         this.zipCode = address.getZipCode();
         this.street = address.getStreet();
         this.number = address.getNumber();
         this.neighborhood = address.getNeighborhood();
         this.city = address.getCity();
-        this.UF = address.getUF();
+        this.uf = address.getUf();
         this.country = address.getCountry();
+        this.mainAddress = address.isMainAddress();
     }
 
 }
