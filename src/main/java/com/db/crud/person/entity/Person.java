@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.db.crud.person.dto.PersonDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,7 +17,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tbl_person") // Define "tbl_person" como o nome da tabela
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // Criamos esse construtor somente por causa do JPA
 @AllArgsConstructor(access = AccessLevel.PUBLIC) // Cria um construtor para a criação da classe Person com todos os atributos
-@Data // Cria automaticamente os getters, setters para todos os atributos e um toString para a classe
+@Data// Cria automaticamente os getters, setters para todos os atributos e um toString para a classe
 public class Person {
 
     @Id // Indica o atributo como um ID
@@ -46,8 +48,9 @@ public class Person {
     @NotNull(message = "Informe uma data válida!")
     private LocalDate birthDate;
 
+    // @JsonManagedReference
     @OneToMany(mappedBy = "personID", cascade = CascadeType.PERSIST) // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
-    @Valid // VERIFICAR SE VÁLIDO OS ATRIBUTOS DO ENDEREÇO
+    // @Valid // VERIFICAR SE VÁLIDO OS ATRIBUTOS DO ENDEREÇO
     private List<Address> address = new ArrayList<>();
 
 
