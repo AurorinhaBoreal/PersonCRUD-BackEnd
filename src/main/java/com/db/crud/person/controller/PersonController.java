@@ -47,6 +47,6 @@ public class PersonController {
     @PatchMapping("/{personID}/update")
     public void updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
         log.info("Atualizando Pessoa: "+person);
-        // service.update(person, personID);
+        service.update(person, personID);
     }
 }
