@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.db.crud.person.dto.PersonDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -48,9 +45,7 @@ public class Person {
     @NotNull(message = "Informe uma data válida!")
     private LocalDate birthDate;
 
-    // @JsonManagedReference
     @OneToMany(mappedBy = "personID", cascade = CascadeType.PERSIST) // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
-    // @Valid // VERIFICAR SE VÁLIDO OS ATRIBUTOS DO ENDEREÇO
     private List<Address> address = new ArrayList<>();
 
 

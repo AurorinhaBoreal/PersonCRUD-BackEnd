@@ -1,13 +1,10 @@
 package com.db.crud.person.service;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.db.crud.person.controller.PersonController;
 import com.db.crud.person.dto.AddressDTO;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
@@ -21,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AddressService {
     
-    private Logger logger = Logger.getLogger(PersonController.class.getName());
-
     @Autowired
     AddressRepository repositoryA;
 

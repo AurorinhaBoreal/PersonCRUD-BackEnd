@@ -1,15 +1,5 @@
 package com.db.crud.person.dto;
 
-
-import com.db.crud.person.entity.Person;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -42,7 +32,7 @@ public class AddressDTO {
     private String city;
 
     @NotBlank(message = "Informe uma sigla para o estado!")
-    // @Size(min = 2, max = 2, message = "Sigla inválida!")
+    @Size(min = 2, max = 2, message = "Sigla inválida!")
     private String uf;
 
     @NotBlank(message = "Informe um país!")
