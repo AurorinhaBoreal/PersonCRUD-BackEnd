@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.br.CPF;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +21,7 @@ public class PersonDTO {
     private String lastName;
 
     @NotBlank(message = "Informe um CPF!")
-    @Size(min=10, max = 11, message = "CPF inválido!")
-    // TODO: Register Unique CPF
+    @CPF(message = "CPF Inválido!")
     private String cpf;
 
     @NotNull(message = "Informe uma data válida!")
@@ -30,7 +29,9 @@ public class PersonDTO {
 
     @Override
     public String toString() {
-        return "CPF: "+this.cpf+" | Nome: "+this.firstName+" "+this.lastName+" | Data de Nascimento: "+this.birthDate+" |";
+        return "CPF: "+this.cpf
+            +" | Nome: "+this.firstName+" "+this.lastName
+            +" | Data de Nascimento: "+this.birthDate+" |";
     }
     
     
