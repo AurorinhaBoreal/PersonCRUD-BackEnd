@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +37,7 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @PostMapping("/{personID}/create")
+    @PostMapping("/create/{personID}")
     public ResponseEntity<Address> createAddress(@RequestBody @Valid AddressDTO address, @PathVariable Long personID) {
 
         var body = service.create(address, personID);
@@ -47,7 +48,7 @@ public class AddressController {
         
     }
 
-    @PatchMapping("/{addressID}/update")
+    @PatchMapping("/update/{addressID}")
     public ResponseEntity<Address> updateAddress(@RequestBody @Valid AddressDTO address, @PathVariable Long addressID) {
 
         var body = service.update(address, addressID);
@@ -55,4 +56,11 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
     
+    @DeleteMapping("/delete/{addressID}")
+    public ResponseEntity<String> deleteAddress(@PathVariable Long addressID) {
+        
+        service.delete(addressID);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Endereço com ID "+addressID+" foi deletado com sucesso!");
+    }
 }

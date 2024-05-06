@@ -9,8 +9,12 @@ import com.db.crud.person.service.PersonService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,9 +45,15 @@ public class PersonController {
         service.create(new Person(person));
     }
 
-    @PatchMapping("/{personID}/update")
+    @PatchMapping("/update/{personID}")
     public void updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
         log.info("Atualizando Pessoa: "+person);
         service.update(person, personID);
+    }
+
+    @DeleteMapping("/delete/{personID}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long personID) {
+        service.delete(personID);
+        return ResponseEntity.status(HttpStatus.OK).body("A pessoa com ID "+personID+" foi deletada com sucesso!");
     }
 }
