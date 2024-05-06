@@ -11,6 +11,8 @@ import com.db.crud.person.controller.PersonController;
 import com.db.crud.person.dto.PersonDTO;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreatePersonException;
+import com.db.crud.person.exception.DeleteAddressException;
+import com.db.crud.person.exception.DeletePersonException;
 import com.db.crud.person.exception.UpdatePersonException;
 import com.db.crud.person.repository.PersonRepository;
 
@@ -54,6 +56,14 @@ public class PersonService {
             return personOriginal;
         } catch (Exception e) {
             throw new UpdatePersonException("Não foi possivel atualizar os dados de Pessoa");
+        }
+    }
+
+    public void delete(Long personID) {
+        try {
+            repository.deleteById(personID);    
+        } catch (Exception e) {
+            throw new DeletePersonException("Não foi possivel deletar a Pessoa!");
         }
         
     }
