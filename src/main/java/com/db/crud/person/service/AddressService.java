@@ -9,6 +9,7 @@ import com.db.crud.person.dto.AddressDTO;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreateAddressException;
+import com.db.crud.person.exception.UpdateAddressException;
 import com.db.crud.person.repository.AddressRepository;
 import com.db.crud.person.repository.PersonRepository;
 
@@ -61,5 +62,27 @@ public class AddressService {
         addresses.forEach((element) -> {
             if (element.isMainAddress() == true) throw new CreateAddressException("Ja existe um endereço principal!");
         });
+    }
+
+    public Address update(AddressDTO addressUpdate, Long addressID) {
+        try {
+            Address addressOriginal = repositoryA.findById(addressID).get();
+
+            addressOriginal.setZipCode(addressUpdate.getZipCode());
+            addressOriginal.setStreet(addressUpdate.getStreet());
+            addressOriginal.setNumber(addressUpdate.getNumber());
+            addressOriginal.setNeighborhood(addressUpdate.getNeighborhood());
+            addressOriginal.setCity(addressUpdate.getCity());
+            addressOriginal.setUf(addressUpdate.getUf());
+            addressOriginal.setCountry(addressUpdate.getCountry());
+            addressOriginal.setMainAddress(addressUpdate.isMainAddress());
+            repositoryA.save(addressOriginal);
+
+            log.info("O endereço atual é o principal? "+addressOriginal.isMainAddress());
+
+            return addressOriginal;
+        } catch (Exception e) {
+            throw new UpdateAddressException("Não foi possivel atualizar os dados do Endereço!");
+        }
     }
 }
