@@ -2,6 +2,7 @@ package com.db.crud.person.service;
 
 import java.util.List;
 
+import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import com.db.crud.person.dto.AddressDTO;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreateAddressException;
+import com.db.crud.person.exception.DeleteAddressException;
 import com.db.crud.person.exception.UpdateAddressException;
 import com.db.crud.person.repository.AddressRepository;
 import com.db.crud.person.repository.PersonRepository;
@@ -84,5 +86,18 @@ public class AddressService {
         } catch (Exception e) {
             throw new UpdateAddressException("Não foi possivel atualizar os dados do Endereço!");
         }
+    }
+
+    public void delete(Long addressID) {
+        try {
+            Address address = repositoryA.findById(addressID).get();
+            
+            repositoryA.delete(address);
+
+            log.info("O endereço foi deletado. ID: "+addressID);
+        } catch (Exception e) {
+            throw new DeleteAddressException("Não foi possivel deletar o Endereço!");
+        }
+            
     }
 }
