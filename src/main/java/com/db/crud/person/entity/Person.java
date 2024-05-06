@@ -45,7 +45,7 @@ public class Person {
     @NotNull(message = "Informe uma data válida!")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "personID", cascade = CascadeType.PERSIST) // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
+    @OneToMany(mappedBy = "personID", cascade = CascadeType.ALL) // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
     private List<Address> address = new ArrayList<>();
 
 

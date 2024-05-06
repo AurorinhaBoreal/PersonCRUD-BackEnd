@@ -29,7 +29,7 @@ public class Address {
     @Column(name = "address_id")
     private Long ID;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
     @JsonBackReference
     private Person personID;
