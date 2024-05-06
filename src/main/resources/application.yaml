@@ -5,5 +5,10 @@ spring:
     username: ${POSTGRES_USER}
   jpa:
     hibernate:
-      ddl-auto: update # Or "create-drop"
+      ddl-auto: create-drop # Or "update"
     show-sql: true
+# flyway:
+#   url: ${DB_URL}
+#   schemas: USERSERVICE
+#   user: ${POSTGRES_USER}
+#   password: ${POSTGRES_PASSWORD}
