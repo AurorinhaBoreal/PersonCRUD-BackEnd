@@ -22,37 +22,39 @@
 
 
 ## Minimum Viable Product
-- Container Docker
-- Conectar Banco
-- Entidade Pessoa (ID, Nome, Data Nasc, CPF)
-- Entidade Endereço (ID, personID, Street, Number, Neighborhood, City, UF, Country)
-- Relacionar Pessoa e Endereço (1:n)
-- Listar Pessoas e Endereços
-- Atualizar Pessoa e Endereços
-- Excluir Pessoas e Endereços
-- Mostrar Idade da Pessoa
-- Validações
-- Testes Unitários
+- ✅ Container Docker
+- ✅ Conectar Banco
+- ✅ Entidade Pessoa (ID, Nome, Data Nasc, CPF)
+- ✅ Entidade Endereço (ID, personID, Street, Number, Neighborhood, City, UF, Country)
+- ✅ Relacionar Pessoa e Endereço (1:n)
+- ✅ Listar Pessoas e Endereços
+- ✅ Atualizar Pessoa e Endereços
+- 🚧 Excluir Pessoas e Endereços
+- 🚧 Mostrar Idade da Pessoa
+- 🚧 Validações
+- 🚧 Testes Unitários
  
 -> EXTRAS:
-- Tratamento de Exceções
-- Testes de Integração
-- Swagger
-- Informar endereço principal da Pessoa
-- Paginação da Lista de Pessoas
+- 🚧 Tratamento de Exceções
+- 🚧 Testes de Integração
+- ✅ Swagger
+- ✅ Informar endereço principal da Pessoa
+- 🚧 Paginação da Lista de Pessoas
  
 US's - MVP
-- 🚧 [US001] Como usuário, quero me cadastrar
+- ✅ [US001] Como usuário, quero me cadastrar
   - ✅ [US001-1] Criar Entidade Pessoa
-  - ✅ [US-001-2] Criar Entidade Endereço
-  - 🚧 [US-001-3] Inserir Pessoa com Endereço no Banco
-- Como usuário, quero poder vincular um ou mais endereços a minha pessoa
-- Como usuário, quero poder atualizar os dados da minha pessoa
-- Como usuário, quero poder atualizar os dados dos meus endereços
-- Como usuário, quero poder excluir os dados da minha pessoa
-- Como usuário, quero poder excluir os dados dos meus endereços
-- Como usuário, quero poder ver a minha idade no sistema
-- Como usuário, quero poder ver minhas informações e endereços no sistema
+  - ✅ [US001-2] Criar Entidade Endereço
+  - ✅ [US001-3] Inserir Pessoa com Endereço no Banco
+- ✅ [US002] Como usuário, quero poder vincular um ou mais endereços a minha pessoa e defini-los como primários ou secundários
+- ✅ [US003] Como usuário, quero poder visualizar minhas informações
+- ✅ [US004] Como usuário, quero poder atualizar meu endereço e dados pessoais
+  - ✅ [US004-1] Atualizar os dados da minha pessoa
+  - ✅ [US004-2] Atualizar os dados dos meus endereços
+- 🚧 [US005] Como usuário quero poder excluir meus endereços e meus dados
+  - 🚧 [US005-1] Excluir os dados da minha pessoa e por consequência os de Endereço
+  - 🚧 [US005-1] Excluir os dados de meus endereços
+- 🚧 [US006] Como usuário, quero poder visualizar a minha idade no sistema
  
 US's - EXTRA
 - Como usuário, quero poder indicar um endereço principal
