@@ -39,7 +39,7 @@
 - 🚧 Testes de Integração
 - ✅ Swagger
 - ✅ Informar endereço principal da Pessoa
-- 🚧 Paginação da Lista de Pessoas
+- ✅ Paginação da Lista de Pessoas
  
 US's - MVP
 - ✅ [US001] Como usuário, quero me cadastrar
@@ -56,10 +56,10 @@ US's - MVP
   - ✅ [US005-1] Excluir os dados de meus endereços
 - ✅ [US006] Como usuário, quero poder visualizar a minha idade no sistema
 - 🚧 [US007] Criar Mappers para conversão DTO - Entidade
-- 🚧 [US008] Criar Método para paginação dos dados a serem apresentados
+- ✅ [US008] Criar Método para paginação dos dados a serem apresentados
 
 US's - EXTRA
-- Como usuário, quero poder indicar um endereço principal
+- ✅ Como usuário, quero poder indicar um endereço principal
 - Como usuário, quero poder indicar um nome social
  
 -> INFO
