@@ -9,7 +9,6 @@ import com.db.crud.person.service.PersonService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -56,4 +57,11 @@ public class PersonController {
         service.delete(personID);
         return ResponseEntity.status(HttpStatus.OK).body("A pessoa com ID "+personID+" foi deletada com sucesso!");
     }
+
+    @GetMapping("/age/{personID}")
+    public ResponseEntity<String> getAge(@PathVariable Long personID) {
+        var info = service.calcAge(personID);
+        return ResponseEntity.status(HttpStatus.OK).body(info);
+    }
+    
 }
