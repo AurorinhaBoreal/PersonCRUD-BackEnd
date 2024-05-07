@@ -9,7 +9,10 @@ import com.db.crud.person.service.PersonService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -40,22 +43,30 @@ public class PersonController {
         return service.list();
     }
 
+    @GetMapping("/pageable")
+    public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
+        return service.findAll(pageable);
+    }
+    
+
     @PostMapping("/create")
-    public void createUser(@RequestBody @Valid PersonDTO person) {
+    public ResponseEntity<Person> createUser(@RequestBody @Valid PersonDTO person) {
         service.verifyCPF(person.getCpf());
-        service.create(new Person(person));
+        var info = service.create(new Person(person));
+        return ResponseEntity.status(HttpStatus.CREATED).body(info);
     }
 
     @PatchMapping("/update/{personID}")
-    public void updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
+    public ResponseEntity<Person> updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
         log.info("Atualizando Pessoa: "+person);
-        service.update(person, personID);
+        var info = service.update(person, personID);
+        return ResponseEntity.status(HttpStatus.OK).body(info);
     }
 
     @DeleteMapping("/delete/{personID}")
     public ResponseEntity<String> deleteUser(@PathVariable Long personID) {
         service.delete(personID);
-        return ResponseEntity.status(HttpStatus.OK).body("A pessoa com ID "+personID+" foi deletada com sucesso!");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("A pessoa com ID "+personID+" foi deletada com sucesso!");
     }
 
     @GetMapping("/age/{personID}")
