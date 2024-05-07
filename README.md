@@ -35,8 +35,8 @@
 - ✅ Atualizar Pessoa e Endereços
 - ✅ Excluir Pessoas e Endereços
 - ✅ Mostrar Idade da Pessoa
-- ✅ Validações
-- ✅ Testes Unitários
+- 🚧 Validações
+- 🚧 Testes Unitários
  
 -> EXTRAS:
 - ✅ Tratamento de Exceções
@@ -59,9 +59,7 @@ US's - MVP
   - ✅ [US005-1] Excluir os dados da minha pessoa e por consequência os de Endereço
   - ✅ [US005-1] Excluir os dados de meus endereços
 - ✅ [US006] Como usuário, quero poder visualizar a minha idade no sistema
-- 🚧 [US007] Criar Mappers para conversão DTO - Entidade
-- ✅ [US008] Criar Método para paginação dos dados a serem apresentados
-
+ 
 US's - EXTRA
 - ✅ Como usuário, quero poder indicar um endereço principal
 - 🚧 Como usuário, quero poder indicar um nome social
