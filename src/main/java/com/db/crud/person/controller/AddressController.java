@@ -61,6 +61,6 @@ public class AddressController {
         
         service.delete(addressID);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Endereço com ID "+addressID+" foi deletado com sucesso!");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Endereço com ID "+addressID+" foi deletado com sucesso!");
     }
 }
