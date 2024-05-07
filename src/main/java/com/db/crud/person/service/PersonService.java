@@ -4,11 +4,13 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import com.db.crud.person.dto.PersonDTO;
+import com.db.crud.person.dto.PersonPageableDTO;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreatePersonException;
 import com.db.crud.person.exception.DeletePersonException;
@@ -26,6 +28,16 @@ public class PersonService {
 
     public List<Person> list() {
         return repository.findAll();
+    }
+
+    public Page<Object> findAll(Pageable pageable) {
+        try {
+            log.info("Pessoas Registradas:");
+            return repository.findAll(pageable).map(PersonPageableDTO::new);
+            
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Erro ao mostrar páginação!");
+        }
     }
 
     public void verifyCPF(String cpf) {
