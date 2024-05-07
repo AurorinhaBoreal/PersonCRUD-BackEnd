@@ -1,19 +1,19 @@
-package com.db.crud.person.mapper;
+// package com.db.crud.person.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+// import org.mapstruct.Mapper;
+// import org.mapstruct.factory.Mappers;
 
-import com.db.crud.person.dto.AddressDTO;
-import com.db.crud.person.entity.Address;
+// import com.db.crud.person.dto.AddressDTO;
+// import com.db.crud.person.entity.Address;
 
-@Mapper
-public interface AddressDTOMapper {
+// @Mapper
+// public interface AddressDTOMapper {
     
-    // Cria uma instância do Mapper
-    AddressDTOMapper INSTANCE = Mappers.getMapper(AddressDTOMapper.class);
+//     // Cria uma instância do Mapper
+//     AddressDTOMapper INSTANCE = Mappers.getMapper(AddressDTOMapper.class);
 
-    // Converte 
-    AddressDTO EntityToDTO(Address adress);
+//     // Converte 
+//     AddressDTO EntityToDTO(Address adress);
 
-    Address DTOToEntity(AddressDTO addressDTO);
-}
+//     Address DTOToEntity(AddressDTO addressDTO);
+// }
