@@ -2,7 +2,8 @@
 
 ## 🧑🏻‍💻 Executar
   Este projeto utiliza o Docker para subir um banco PostgreSQL, por isso ao abrir o mesmo execute:
-    docker compose up -d    # Sobe o container do PostgreSQL
+  
+  **docker compose up -d    # Sobe o container do PostgreSQL**
   
   Após isso pode iniciar o projeto normalmente. 
   
