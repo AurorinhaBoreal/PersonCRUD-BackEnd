@@ -4,7 +4,9 @@
   Este projeto utiliza o Docker para subir um banco PostgreSQL, por isso ao abrir o mesmo execute:
     docker compose up -d    # Sobe o container do PostgreSQL
   
-  Após isso pode iniciar o projeto normalmente.
+  Após isso pode iniciar o projeto normalmente. 
+  
+  Para visualizar a documentação das requisições, acesse o link do Swagger: http://localhost:8080/swagger-ui/index.html
 
 ## 🗃️ **Dependências:** 
 - 🗄️ Spring Data JPA 
@@ -68,10 +70,10 @@ US's - EXTRA
 - Estrutura Service, Repository, Controller
 - Postgres
 - LOMBOK
-- DTO >>> Record
- 
--> ARQUIVOS
-- Models:
+- DTO
+- Swagger
+
+-> MODELS:
 
   tbl_person:
     person_id - int auto increment (PK)
@@ -82,61 +84,25 @@ US's - EXTRA
     adress - Foreign Key 
 
   tbl_address:
-    address_id (pk) | ID_pessoa (fk) | street | number | neighborhood | city, state, country
+    address_id - int auto increment (PK) 
+    person_id - int (FK)
+    zipCode - varchar(12) 
+    street - varchar(25)
+    number - varchar(5)
+    neighborhood - varchar(20)
+    city - varchar(20)
+    UF - char(2)
+    country - varchar(15)
  
-- Repository
-  Criar Pessoa
-  Criar Endereço (Separado, mas vinculado? Validação do ID de Pessoa)
-  Atualizar Pessoa (por ID)
-  Atualizar Endereço (por ID)
-  Excluir Pessoa (por ID)
-  Excluir Endereço (por ID)
-  Visualizar Informações Pessoa (por ID)
-  Visualizar Informações Endereço (por ID)
-  Visualizar Idade Pessoa (por ID)
- 
-  Extra
-  Excluir Pessoa (por nome completo)
-  Visualizar Informações Pessoa (por nome completo)
-  Visualizar Pessoas por páginação
-  Visualizar Idade Pessoa (por nome completo)
-  Indicar Endereço Principal (por ID)
-  Adicionar Nome Social a Pessoa (por ID)
-  Visualizar Nome Social (por ID)
-- Service
-  createPerson
-  createAdress
-  updatePerson (ID)
-  updateAdress (ID)
-  deletePerson (ID - SoftDelete)
-  deleteAdress (ID - SoftDelete)
-  getPerson (ID)
-  getAdress (ID)
-  getPersonAge (ID)
- 
-  Extra
-  deletePerson (name)
-  getPerson (name)
-  getPersonAge (name)
-  setMainAdress (ID)
-  setSocialName (ID)
-  getSocialName (ID)
- 
-- Controller
-  /person/create/
-  /person/update/:id
-  /person/delete/:id
-  /person/get/:id
-  /person/getage/:id
-  /adress/create/
-  /adress/update/:id
-  /adress/delete/:id
-  /adress/get/:id
- 
-  Extra
-  /person/delete/:name
-  /person/get/:name
-  /person/getage/:name
-  /person/setsn/
-  /person/getsn/:id
-  /adress/setmain/:id
+- CONTROLLERS:
+  -> /person/list                # Lista as pessoas e seus respectivos endereços adicionados ao banco
+  -> /person/pageable            # Lista as pessoas por meio de paginação
+  -> /person/update/{personID}   # Atualiza a pessoa especificada no banco
+  -> /person/delete/{personID}   # Apaga a pessoa e seus respectivos endereços no banco
+  -> /person/getage/{personID}   # Informa a idade da pessoa especificada
+
+
+  -> /address/list                 # Lista os endereços já adicionados ao banco
+  -> /adress/create/{personID}     # Adiciona o endereço ao banco^e o vincula a um usuário
+  -> /adress/update/{addressID}    # Atualiza o endereço espeicificado no banco
+  -> /adress/delete/{addressID}    # Deleta o endereço especificado do banco
