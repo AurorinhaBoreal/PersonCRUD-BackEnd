@@ -1,8 +1,10 @@
 # 🙋🏠 CRUD PESSOA
 
 ## 🧑🏻‍💻 Executar
-    gradle run      # Iniciar Projeto
-    gradle tests    # Iniciar Testes
+  Este projeto utiliza o Docker para subir um banco PostgreSQL, por isso ao abrir o mesmo execute:
+    docker compose up -d    # Sobe o container do PostgreSQL
+  
+  Após isso pode iniciar o projeto normalmente.
 
 ## 🗃️ **Dependências:** 
 - 🗄️ Spring Data JPA 
@@ -31,11 +33,11 @@
 - ✅ Atualizar Pessoa e Endereços
 - ✅ Excluir Pessoas e Endereços
 - ✅ Mostrar Idade da Pessoa
-- 🚧 Validações
-- 🚧 Testes Unitários
+- ✅ Validações
+- ✅ Testes Unitários
  
 -> EXTRAS:
-- 🚧 Tratamento de Exceções
+- ✅ Tratamento de Exceções
 - 🚧 Testes de Integração
 - ✅ Swagger
 - ✅ Informar endereço principal da Pessoa
@@ -60,7 +62,7 @@ US's - MVP
 
 US's - EXTRA
 - ✅ Como usuário, quero poder indicar um endereço principal
-- Como usuário, quero poder indicar um nome social
+- 🚧 Como usuário, quero poder indicar um nome social
  
 -> INFO
 - Estrutura Service, Repository, Controller
@@ -69,9 +71,18 @@ US's - EXTRA
 - DTO >>> Record
  
 -> ARQUIVOS
-- Model:
-  Pessoa = ID (pk) | first_name | second_name | data_nasc | cpf
-  Endereco = ID (pk) | ID_pessoa (fk) | street | number | neighborhood | city, state, country
+- Models:
+
+  tbl_person:
+    person_id - int auto increment (PK)
+    firstName - varchar(20)
+    lastName - varchar(20)
+    cpf - char(11)
+    birthDate - Date
+    adress - Foreign Key 
+
+  tbl_address:
+    address_id (pk) | ID_pessoa (fk) | street | number | neighborhood | city, state, country
  
 - Repository
   Criar Pessoa
