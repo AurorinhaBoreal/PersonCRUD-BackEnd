@@ -40,7 +40,7 @@ public class PersonService {
         }
     }
 
-    public boolean verifyCPF(String cpf) {
+    private boolean verifyCPF(String cpf) {
         if (repository.existsByCpf(cpf) == true) {
             throw new CreatePersonException("Já existe um usuario com esse CPF!");
         }
@@ -49,6 +49,7 @@ public class PersonService {
 
     public Person create(Person person) {
         try {
+            verifyCPF(person.getCpf());
             repository.save(person);
             log.info("Pessoa criada com sucesso. Pessoa: "+person); 
             return person;
