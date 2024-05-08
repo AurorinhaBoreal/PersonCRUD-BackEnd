@@ -57,10 +57,10 @@ public class AddressController {
     }
     
     @DeleteMapping("/delete/{addressID}")
-    public ResponseEntity<String> deleteAddress(@PathVariable Long addressID) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable Long addressID) {
         
         addressService.delete(addressID);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Endereço com ID "+addressID+" foi deletado com sucesso!");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
