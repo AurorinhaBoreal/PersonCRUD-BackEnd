@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'jacoco'
 }
 
 group = 'com.db.crud'
@@ -29,11 +30,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
-	// implementation 'org.flywaydb:flyway-core:10.12.0'
-	// implementation 'org.flywaydb:flyway-database-postgresql:10.12.0' 
-	// implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.5'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+jacoco {
+    toolVersion = "0.8.9"
+}
+
+test {
+    jacoco {
+        enabled = true
+    }
 }

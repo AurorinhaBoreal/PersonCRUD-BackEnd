@@ -1,8 +1,12 @@
 # 🙋🏠 CRUD PESSOA
 
 ## 🧑🏻‍💻 Executar
-    gradle run      # Iniciar Projeto
-    gradle tests    # Iniciar Testes
+  Este projeto utiliza o Docker para subir um banco PostgreSQL, por isso ao abrir o mesmo execute:
+    docker compose up -d    # Sobe o container do PostgreSQL
+  
+  Após isso pode iniciar o projeto normalmente. 
+  
+  Para visualizar a documentação das requisições, acesse o link do Swagger: http://localhost:8080/swagger-ui/index.html
 
 ## 🗃️ **Dependências:** 
 - 🗄️ Spring Data JPA 
@@ -31,15 +35,15 @@
 - ✅ Atualizar Pessoa e Endereços
 - ✅ Excluir Pessoas e Endereços
 - ✅ Mostrar Idade da Pessoa
-- 🚧 Validações
-- 🚧 Testes Unitários
+- ✅ Validações
+- ✅ Testes Unitários
  
 -> EXTRAS:
-- 🚧 Tratamento de Exceções
+- ✅ Tratamento de Exceções
 - 🚧 Testes de Integração
 - ✅ Swagger
 - ✅ Informar endereço principal da Pessoa
-- 🚧 Paginação da Lista de Pessoas
+- ✅ Paginação da Lista de Pessoas
  
 US's - MVP
 - ✅ [US001] Como usuário, quero me cadastrar
@@ -55,75 +59,50 @@ US's - MVP
   - ✅ [US005-1] Excluir os dados da minha pessoa e por consequência os de Endereço
   - ✅ [US005-1] Excluir os dados de meus endereços
 - ✅ [US006] Como usuário, quero poder visualizar a minha idade no sistema
- 
+- 🚧 [US007] Criar Mappers para conversão DTO - Entidade
+- ✅ [US008] Criar Método para paginação dos dados a serem apresentados
+
 US's - EXTRA
-- Como usuário, quero poder indicar um endereço principal
-- Como usuário, quero poder indicar um nome social
+- ✅ Como usuário, quero poder indicar um endereço principal
+- 🚧 Como usuário, quero poder indicar um nome social
  
 -> INFO
 - Estrutura Service, Repository, Controller
 - Postgres
 - LOMBOK
-- DTO >>> Record
+- DTO
+- Swagger
+
+-> MODELS:
+
+  tbl_person:
+    person_id - int auto increment (PK)
+    firstName - varchar(20)
+    lastName - varchar(20)
+    cpf - char(11)
+    birthDate - Date
+    adress - Foreign Key 
+
+  tbl_address:
+    address_id - int auto increment (PK) 
+    person_id - int (FK)
+    zipCode - varchar(12) 
+    street - varchar(25)
+    number - varchar(5)
+    neighborhood - varchar(20)
+    city - varchar(20)
+    UF - char(2)
+    country - varchar(15)
  
--> ARQUIVOS
-- Model:
-  Pessoa = ID (pk) | first_name | second_name | data_nasc | cpf
-  Endereco = ID (pk) | ID_pessoa (fk) | street | number | neighborhood | city, state, country
- 
-- Repository
-  Criar Pessoa
-  Criar Endereço (Separado, mas vinculado? Validação do ID de Pessoa)
-  Atualizar Pessoa (por ID)
-  Atualizar Endereço (por ID)
-  Excluir Pessoa (por ID)
-  Excluir Endereço (por ID)
-  Visualizar Informações Pessoa (por ID)
-  Visualizar Informações Endereço (por ID)
-  Visualizar Idade Pessoa (por ID)
- 
-  Extra
-  Excluir Pessoa (por nome completo)
-  Visualizar Informações Pessoa (por nome completo)
-  Visualizar Pessoas por páginação
-  Visualizar Idade Pessoa (por nome completo)
-  Indicar Endereço Principal (por ID)
-  Adicionar Nome Social a Pessoa (por ID)
-  Visualizar Nome Social (por ID)
-- Service
-  createPerson
-  createAdress
-  updatePerson (ID)
-  updateAdress (ID)
-  deletePerson (ID - SoftDelete)
-  deleteAdress (ID - SoftDelete)
-  getPerson (ID)
-  getAdress (ID)
-  getPersonAge (ID)
- 
-  Extra
-  deletePerson (name)
-  getPerson (name)
-  getPersonAge (name)
-  setMainAdress (ID)
-  setSocialName (ID)
-  getSocialName (ID)
- 
-- Controller
-  /person/create/
-  /person/update/:id
-  /person/delete/:id
-  /person/get/:id
-  /person/getage/:id
-  /adress/create/
-  /adress/update/:id
-  /adress/delete/:id
-  /adress/get/:id
- 
-  Extra
-  /person/delete/:name
-  /person/get/:name
-  /person/getage/:name
-  /person/setsn/
-  /person/getsn/:id
-  /adress/setmain/:id
+- CONTROLLERS:
+  -> /person/list                # Lista as pessoas e seus respectivos endereços adicionados ao banco
+  -> /person/pageable            # Lista as pessoas por meio de paginação
+  -> /person/update/{personID}   # Atualiza a pessoa especificada no banco
+  -> /person/delete/{personID}   # Apaga a pessoa e seus respectivos endereços no banco
+  -> /person/getage/{personID}   # Informa a idade da pessoa especificada
+
+
+  -> /address/list                 # Lista os endereços já adicionados ao banco
+  -> /adress/create/{personID}     # Adiciona o endereço ao banco^e o vincula a um usuário
+  -> /adress/update/{addressID}    # Atualiza o endereço espeicificado no banco
+  -> /adress/delete/{addressID}    # Deleta o endereço especificado do banco
