@@ -35,7 +35,7 @@ import java.util.List;
 @Slf4j
 public class PersonController {
 
-    @Autowired // Injeção de Dependências - Injetando a Person Repository na Controller
+    @Autowired
     private PersonService personService;
     
     @GetMapping("/list")
@@ -51,7 +51,6 @@ public class PersonController {
 
     @PostMapping("/create")
     public ResponseEntity<Person> createUser(@RequestBody @Valid PersonDTO person) {
-        personService.verifyCPF(person.getCpf());
         var info = personService.create(new Person(person));
         return ResponseEntity.status(HttpStatus.CREATED).body(info);
     }
@@ -64,9 +63,9 @@ public class PersonController {
     }
 
     @DeleteMapping("/delete/{personID}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long personID) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long personID) {
         personService.delete(personID);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("A pessoa com ID "+personID+" foi deletada com sucesso!");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/age/{personID}")
