@@ -40,10 +40,11 @@ public class PersonService {
         }
     }
 
-    public void verifyCPF(String cpf) {
+    public boolean verifyCPF(String cpf) {
         if (repository.existsByCpf(cpf) == true) {
             throw new CreatePersonException("Já existe um usuario com esse CPF!");
         }
+        return false;
     }
 
     public Person create(Person person) {
@@ -71,13 +72,14 @@ public class PersonService {
         }
     }
 
-    public void delete(Long personID) {
+    public Person delete(Long personID) {
         try {
-            repository.deleteById(personID);    
+            Person person = repository.findById(personID).get();
+            repository.delete(person);
+            return person;
         } catch (Exception e) {
             throw new DeletePersonException("Não foi possivel deletar a Pessoa!");
         }
-        
     }
 
     public String calcAge(Long personID) {
