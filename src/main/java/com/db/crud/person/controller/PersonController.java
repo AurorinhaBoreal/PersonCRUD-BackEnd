@@ -36,42 +36,42 @@ import java.util.List;
 public class PersonController {
 
     @Autowired // Injeção de Dependências - Injetando a Person Repository na Controller
-    private PersonService service;
+    private PersonService personService;
     
     @GetMapping("/list")
     public List<Person> listPersons() {
-        return service.list();
+        return personService.list();
     }
 
     @GetMapping("/pageable")
     public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
-        return service.findAll(pageable);
+        return personService.findAll(pageable);
     }
     
 
     @PostMapping("/create")
     public ResponseEntity<Person> createUser(@RequestBody @Valid PersonDTO person) {
-        service.verifyCPF(person.getCpf());
-        var info = service.create(new Person(person));
+        personService.verifyCPF(person.getCpf());
+        var info = personService.create(new Person(person));
         return ResponseEntity.status(HttpStatus.CREATED).body(info);
     }
 
     @PatchMapping("/update/{personID}")
     public ResponseEntity<Person> updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
         log.info("Atualizando Pessoa: "+person);
-        var info = service.update(person, personID);
+        var info = personService.update(person, personID);
         return ResponseEntity.status(HttpStatus.OK).body(info);
     }
 
     @DeleteMapping("/delete/{personID}")
     public ResponseEntity<String> deleteUser(@PathVariable Long personID) {
-        service.delete(personID);
+        personService.delete(personID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("A pessoa com ID "+personID+" foi deletada com sucesso!");
     }
 
     @GetMapping("/age/{personID}")
     public ResponseEntity<String> getAge(@PathVariable Long personID) {
-        var info = service.calcAge(personID);
+        var info = personService.calcAge(personID);
         return ResponseEntity.status(HttpStatus.OK).body(info);
     }
     
