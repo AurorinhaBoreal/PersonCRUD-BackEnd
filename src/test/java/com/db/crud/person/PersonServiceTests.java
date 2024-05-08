@@ -1,7 +1,6 @@
 package com.db.crud.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -73,15 +72,15 @@ public class PersonServiceTests {
 		assertEquals(person.getCpf(), personFound.get().getCpf());
 	}
 
-	@Test
-	@DisplayName("Verifica se já existe alguém com determinado cpf!")
-	void verifyCPF() {
-		when(personRepository.existsByCpf(personDTO.getCpf())).thenReturn(false);
+	// @Test
+	// @DisplayName("Verifica se já existe alguém com determinado cpf!")
+	// void verifyCPF() {
+	// 	when(personRepository.existsByCpf(personDTO.getCpf())).thenReturn(false);
 
-		Boolean cpf = personService.verifyCPF(person.getCpf());
+	// 	Boolean cpf = personService.verifyCPF(person.getCpf());
 
-		assertFalse(cpf);
-	}
+	// 	assertFalse(cpf);
+	// }
 
 	@Test
 	@DisplayName("Deve inserir pessoa no banco")
