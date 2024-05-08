@@ -29,8 +29,8 @@
 - ✅ Relacionar Pessoa e Endereço (1:n)
 - ✅ Listar Pessoas e Endereços
 - ✅ Atualizar Pessoa e Endereços
-- 🚧 Excluir Pessoas e Endereços
-- 🚧 Mostrar Idade da Pessoa
+- ✅ Excluir Pessoas e Endereços
+- ✅ Mostrar Idade da Pessoa
 - 🚧 Validações
 - 🚧 Testes Unitários
  
@@ -51,10 +51,10 @@ US's - MVP
 - ✅ [US004] Como usuário, quero poder atualizar meu endereço e dados pessoais
   - ✅ [US004-1] Atualizar os dados da minha pessoa
   - ✅ [US004-2] Atualizar os dados dos meus endereços
-- 🚧 [US005] Como usuário quero poder excluir meus endereços e meus dados
-  - 🚧 [US005-1] Excluir os dados da minha pessoa e por consequência os de Endereço
-  - 🚧 [US005-1] Excluir os dados de meus endereços
-- 🚧 [US006] Como usuário, quero poder visualizar a minha idade no sistema
+- ✅ [US005] Como usuário quero poder excluir meus endereços e meus dados
+  - ✅ [US005-1] Excluir os dados da minha pessoa e por consequência os de Endereço
+  - ✅ [US005-1] Excluir os dados de meus endereços
+- ✅ [US006] Como usuário, quero poder visualizar a minha idade no sistema
  
 US's - EXTRA
 - Como usuário, quero poder indicar um endereço principal
