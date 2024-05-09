@@ -1,7 +1,9 @@
 package com.db.crud.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.db.crud.person.dto.PersonDTO;
 import com.db.crud.person.entity.Person;
+import com.db.crud.person.exception.GetInfoException;
 import com.db.crud.person.repository.PersonRepository;
 import com.db.crud.person.service.PersonService;
 
@@ -50,7 +53,7 @@ public class PersonServiceTests {
 	}
 	
 	@Test
-	@DisplayName("Encontra uma pessoa no banco através do CPF")
+	@DisplayName("Happy Test: Should find a person in the Database through ID")
 	void findById() {
 
 		when(personRepository.findById(anyLong())).thenReturn(Optional.of(person)); 
@@ -61,7 +64,7 @@ public class PersonServiceTests {
 	}
 
 	@Test
-	@DisplayName("Encontra uma pessoa no banco através do CPF")
+	@DisplayName("Happy Test: Should find a person in the Database through CPF")
 	void findByCpf() {
 
 		when(personRepository.findByCpf(person.getCpf())).thenReturn(Optional.of(person)); 
@@ -72,18 +75,8 @@ public class PersonServiceTests {
 		assertEquals(person.getCpf(), personFound.get().getCpf());
 	}
 
-	// @Test
-	// @DisplayName("Verifica se já existe alguém com determinado cpf!")
-	// void verifyCPF() {
-	// 	when(personRepository.existsByCpf(personDTO.getCpf())).thenReturn(false);
-
-	// 	Boolean cpf = personService.verifyCPF(person.getCpf());
-
-	// 	assertFalse(cpf);
-	// }
-
 	@Test
-	@DisplayName("Deve inserir pessoa no banco")
+	@DisplayName("Happy Test: Should insert a person in the Database")
 	void createPerson() {
 
 		when(personRepository.save(new Person(personDTO))).thenReturn(person);
@@ -97,7 +90,7 @@ public class PersonServiceTests {
 	}
 
 	@Test
-	@DisplayName("Deve atualizar a pessoa no banco")
+	@DisplayName("Happy Test: Should update a person in the Database")
 	void updatePerson() {
 		when(personRepository.findById(anyLong())).thenReturn(Optional.of(person));
 
@@ -111,9 +104,19 @@ public class PersonServiceTests {
 		assertEquals("Roberto", personUpdated.getFirstName());
 	}
 
-	@DisplayName("Display name")
+	@DisplayName("Happy Test: Should delete a specific person")
+	@Test
+	void deletePessoa() {
+  		when(personRepository.findById(person.getID())).thenReturn(Optional.of(person)); 
+
+  		personService.delete(person.getID());
+
+  		verify(personRepository, times(1)).delete(person);
+	}
+
+	@DisplayName("Happy Test: Should list persons by pagination")
     @Test
-    void findAll() {
+    void findAllPageable() {
 
         List<Person> persons = new ArrayList<>();
 
@@ -126,13 +129,35 @@ public class PersonServiceTests {
         assertTrue(personsFound.isEmpty());
     }
 
-	@DisplayName("Display name")
 	@Test
-	void deletePessoa() {
-  		when(personRepository.findById(person.getID())).thenReturn(Optional.of(person)); 
+	@DisplayName("Happy Test: Should list all person")
+	void findAll() {
+		when(personRepository.findAll()).thenReturn(List.of(person));
 
-  		personService.delete(person.getID());
+		List<Person> listPersons = personService.list();
 
-  		verify(personRepository, times(1)).delete(person);
-}
+		assertFalse(listPersons.isEmpty());
+	}
+
+	@Test
+	@DisplayName("Happy Test: Should inform person's age")
+	void calcAge() {
+		when(personRepository.findById(person.getID())).thenReturn(Optional.of(person));
+
+		var info = personService.calcAge(person.getID());
+
+		assertNotNull(info);
+		assertEquals("Aurora", info[0]);
+		assertNotNull(info[1]);
+	}
+
+	@Test
+	@DisplayName("Sad Test: Should thrown GetInfoException of calcAge")
+	void thrownGetInfoException() {		
+		GetInfoException thrown = assertThrows(GetInfoException.class, () -> {
+			personService.calcAge(person.getID());
+		});
+
+		assertEquals("Não foi possivel calcular a idade.", thrown.getMessage());
+	}
 }
