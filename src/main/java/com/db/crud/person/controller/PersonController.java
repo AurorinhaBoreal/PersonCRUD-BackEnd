@@ -71,7 +71,7 @@ public class PersonController {
     @GetMapping("/age/{personID}")
     public ResponseEntity<String> getAge(@PathVariable Long personID) {
         var info = personService.calcAge(personID);
-        return ResponseEntity.status(HttpStatus.OK).body(info);
+        return ResponseEntity.status(HttpStatus.OK).body("O usuário "+info[0]+" possui "+info[1]+" anos!");
     }
     
 }

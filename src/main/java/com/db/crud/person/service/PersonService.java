@@ -14,6 +14,7 @@ import com.db.crud.person.dto.PersonPageableDTO;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreatePersonException;
 import com.db.crud.person.exception.DeletePersonException;
+import com.db.crud.person.exception.GetInfoException;
 import com.db.crud.person.exception.UpdatePersonException;
 import com.db.crud.person.repository.PersonRepository;
 
@@ -36,7 +37,7 @@ public class PersonService {
             return repository.findAll(pageable).map(PersonPageableDTO::new);
             
         } catch (Exception e) {
-            throw new UnsupportedOperationException("Erro ao mostrar páginação!");
+            throw new GetInfoException("Erro ao mostrar páginação!");
         }
     }
 
@@ -83,16 +84,20 @@ public class PersonService {
         }
     }
 
-    public String calcAge(Long personID) {
-        Person person = repository.findById(personID).get();
-        LocalDate birthDate = person.getBirthDate();
-        LocalDate currentDate = LocalDate.now();
+    public Object[] calcAge(Long personID) {
+        try {
+            Person person = repository.findById(personID).get();
+            LocalDate birthDate = person.getBirthDate();
+            LocalDate currentDate = LocalDate.now();
+            
+            int age = Period.between(birthDate, currentDate).getYears();
+            String name = person.getFirstName();
 
-
-        int age = Period.between(birthDate, currentDate).getYears();
-        String info = "A idade de "+person.getFirstName()+" é de "+age+" anos.";
-        log.info(info);
-        return info;
+            Object[] info = new Object[]{name, age};
+            return info;
+        } catch (Exception e) {
+            throw new GetInfoException("Não foi possivel calcular a idade.");
+        }
     }
 
 }
