@@ -30,7 +30,10 @@ import org.springframework.data.domain.Pageable;
 
 import com.db.crud.person.dto.PersonDTO;
 import com.db.crud.person.entity.Person;
+import com.db.crud.person.exception.CreatePersonException;
+import com.db.crud.person.exception.DeletePersonException;
 import com.db.crud.person.exception.GetInfoException;
+import com.db.crud.person.exception.UpdatePersonException;
 import com.db.crud.person.repository.PersonRepository;
 import com.db.crud.person.service.PersonService;
 
@@ -74,7 +77,7 @@ public class PersonServiceTests {
 		assertNotNull(personFound);
 		assertEquals(person.getCpf(), personFound.get().getCpf());
 	}
-
+	
 	@Test
 	@DisplayName("Happy Test: Should insert a person in the Database")
 	void createPerson() {
@@ -87,6 +90,16 @@ public class PersonServiceTests {
         assertEquals(createPerson.getLastName(), "Kruschewsky");
         assertEquals(createPerson.getCpf(), "37491502814");
         assertEquals(createPerson.getBirthDate().toString(), "2004-05-14");
+	}
+
+	@Test
+	@DisplayName("Sad Test: Should thrown CreatePersonException of create")
+	void thrownCreatePersonException() {
+		CreatePersonException thrown = assertThrows(CreatePersonException.class, () -> {
+			personService.create(null);
+		});
+
+		assertEquals("Não foi possivel criar a pessoa!", thrown.getMessage());
 	}
 
 	@Test
@@ -104,6 +117,16 @@ public class PersonServiceTests {
 		assertEquals("Roberto", personUpdated.getFirstName());
 	}
 
+	@Test
+	@DisplayName("Sad Test: Should thrown UpdatePersonException of update")
+	void thrownUpdatePersonException() {
+		UpdatePersonException thrown = assertThrows(UpdatePersonException.class, () -> {
+			personService.update(null, null);
+		});
+
+		assertEquals("Não foi possivel atualizar os dados de Pessoa", thrown.getMessage());
+	}
+
 	@DisplayName("Happy Test: Should delete a specific person")
 	@Test
 	void deletePessoa() {
@@ -112,6 +135,16 @@ public class PersonServiceTests {
   		personService.delete(person.getID());
 
   		verify(personRepository, times(1)).delete(person);
+	}
+
+	@Test
+	@DisplayName("Sad Test: Should thrown DeletePersonException of delete")
+	void thrownDeletePersonException() {
+		DeletePersonException thrown = assertThrows(DeletePersonException.class, () -> {
+			personService.delete(null);
+		});
+
+		assertEquals("Não foi possivel deletar a Pessoa!", thrown.getMessage());
 	}
 
 	@DisplayName("Happy Test: Should list persons by pagination")
@@ -128,6 +161,16 @@ public class PersonServiceTests {
 
         assertTrue(personsFound.isEmpty());
     }
+
+	@Test
+	@DisplayName("Sad Test: Should thrown GetInfoException of pagination")
+	void thrownPageableException() {
+		GetInfoException thrown = assertThrows(GetInfoException.class, () -> {
+			personService.findAll(null);
+		});
+
+		assertEquals("Erro ao mostrar páginação!", thrown.getMessage());
+	}
 
 	@Test
 	@DisplayName("Happy Test: Should list all person")
@@ -153,7 +196,7 @@ public class PersonServiceTests {
 
 	@Test
 	@DisplayName("Sad Test: Should thrown GetInfoException of calcAge")
-	void thrownGetInfoException() {		
+	void thrownCalcAgeException() {		
 		GetInfoException thrown = assertThrows(GetInfoException.class, () -> {
 			personService.calcAge(person.getID());
 		});
