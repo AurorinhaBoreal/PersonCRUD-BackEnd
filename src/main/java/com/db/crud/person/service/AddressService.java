@@ -46,10 +46,11 @@ public class AddressService {
         }
     }
 
-    public void assignAddress(Address address, Long personID) {
+    public Address assignAddress(Address address, Long personID) {
         try {
             Person person = repositoryP.findById(personID).get();
             address.setPersonID(person);
+            return address;
         } catch (Exception e) {
             throw new CreateAddressException("Não foi possivel vincular o endereço a pessoa!");
         }
@@ -61,7 +62,10 @@ public class AddressService {
         List<Address> addresses = person.getAddress();
 
         addresses.forEach((element) -> {
-            if (element.isMainAddress() == true) throw new CreateAddressException("Ja existe um endereço principal!");
+            if (element.isMainAddress() == true) {
+                throw new CreateAddressException("Ja existe um endereço principal!"
+                );
+            }
         });
     }
 
