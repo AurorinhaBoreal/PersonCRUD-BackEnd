@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -12,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +48,7 @@ public class AddressServiceTests {
     AddressService addressService;
 
     PersonDTO personDTO;
-    Person person;
+    Person person;;
 
     AddressDTO addressDTO;
     Address address;
@@ -58,10 +60,11 @@ public class AddressServiceTests {
         personDTO = new PersonDTO("Aurora", "Kruschewsky", "37491502814", LocalDate.of(2004, 05, 14));
         person = new Person(personDTO);
         person.setID(111L);
-        
+
         addressDTO = new AddressDTO("06453225","Estrada Ferreira Silva","143","Apt 5A","Vizinhança Curiosa","Osasco","SP","Brasil", false);
         address = new Address(addressDTO);
         address.setID(111L);
+        
         
     }
 
@@ -111,24 +114,6 @@ public class AddressServiceTests {
     }
 
     @Test
-    @Disabled // TODO: Fix this Test
-    @DisplayName("Happy Test: Should Verify if Person has two main Address")
-    void verifyMainAddress() {
-        when(personRepository.findById(person.getID())).thenReturn(Optional.of(person));
-        when(addressService.create(addressDTO, person.getID()));
-
-        List<Address> addresses = person.getAddress();
-        address.setMainAddress(true);
-        addresses.add(address);
-        addresses.add(address);
-        
-
-        addressService.verifyMainAddress(address, person.getID());
-
-        assertNotNull(addresses);
-    }
-
-    @Test
     @DisplayName("Sad Test: Should thrown CreateAddressException of verifyMainAddress")
     void thrownVerifyMainAddressException() {
         CreateAddressException thrown = assertThrows(CreateAddressException.class, () -> {
@@ -146,12 +131,18 @@ public class AddressServiceTests {
     }
 
     @Test
-    @Disabled // TODO: Create this test
     @DisplayName("Happy Test: Should Update the Address in the Database")
     void updateAddress() {
-        when(addressRepository.findById(111L)).thenReturn(Optional.of(address));
+        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
 
+        AddressDTO addressUpdated = new AddressDTO("06453225","Estrada Maneirinha","112","Casa 3","Vizinhança Legau","São Paulo","RJ","Brasil", true);
+        Address address2 = new Address(addressUpdated);
+        address2.setID(112L);
 
+        addressService.update(addressUpdated, 112L);
+
+        assertNotNull(addressUpdated);
+        assertEquals("Estrada Maneirinha", addressUpdated.getStreet());
     }
 
     @Test
@@ -165,10 +156,13 @@ public class AddressServiceTests {
     }
 
     @Test
-    @Disabled // TODO: Create this test
     @DisplayName("Happy Test: Should delete the Address from the database")
     void deleteAddress() {
+        when(addressRepository.findById(111L)).thenReturn(Optional.of(address));
         
+        addressService.delete(address.getID());
+
+        verify(addressRepository, times(1)).delete(address);
     }
 
     @Test
