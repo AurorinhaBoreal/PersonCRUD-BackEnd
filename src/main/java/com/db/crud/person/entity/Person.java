@@ -20,15 +20,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "tbl_person")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@Data
+@Entity // Define a classe como uma Entidade JPA
+@Table(name = "tbl_person") // Define "tbl_person" como o nome da tabela
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // Criamos esse construtor somente por causa do JPA
+@AllArgsConstructor(access = AccessLevel.PUBLIC) // Cria um construtor para a criação da classe Person com todos os atributos
+@Data// Cria automaticamente os getters, setters para todos os atributos e um toString para a classe
 public class Person {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Id // Indica o atributo como um ID
+    @GeneratedValue(strategy=GenerationType.IDENTITY) // Define o tipo de geração do ID
     @Column(name = "person_id")
     private Long ID;
 
@@ -45,7 +45,7 @@ public class Person {
     @NotNull(message = "Informe uma data válida!")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "personID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "personID", cascade = CascadeType.ALL) // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
     private List<Address> address = new ArrayList<>();
 
 

@@ -40,11 +40,11 @@
 - 🚧 Testes Unitários
  
 -> EXTRAS:
-- ✅ Tratamento de Exceções
+- 🚧 Tratamento de Exceções
 - 🚧 Testes de Integração
 - ✅ Swagger
 - ✅ Informar endereço principal da Pessoa
-- ✅ Paginação da Lista de Pessoas
+- 🚧 Paginação da Lista de Pessoas
  
 US's - MVP
 - ✅ [US001] Como usuário, quero me cadastrar
