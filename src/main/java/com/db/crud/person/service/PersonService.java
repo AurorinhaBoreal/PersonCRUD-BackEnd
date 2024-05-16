@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 
-import com.db.crud.person.dto.PersonDTO;
-import com.db.crud.person.dto.PersonPageableDTO;
+import com.db.crud.person.dto.RequestPersonDTO;
+import com.db.crud.person.dto.ResponsePersonDTO;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreatePersonException;
 import com.db.crud.person.exception.DeletePersonException;
@@ -18,6 +18,7 @@ import com.db.crud.person.exception.GetInfoException;
 import com.db.crud.person.exception.UpdatePersonException;
 import com.db.crud.person.repository.PersonRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -34,7 +35,7 @@ public class PersonService {
     public Page<Object> findAll(Pageable pageable) {
         try {
             log.info("Pessoas Registradas:");
-            return repository.findAll(pageable).map(PersonPageableDTO::new);
+            return repository.findAll(pageable).map(ResponsePersonDTO::new);
             
         } catch (Exception e) {
             throw new GetInfoException("Erro ao mostrar páginação!");
@@ -48,6 +49,7 @@ public class PersonService {
         return false;
     }
 
+    @Transactional
     public Person create(Person person) {
         try {
             verifyCPF(person.getCpf());
@@ -59,7 +61,8 @@ public class PersonService {
         }
     }
 
-    public Person update(PersonDTO personUpdate, Long personID) {
+    @Transactional
+    public Person update(RequestPersonDTO personUpdate, Long personID) {
         try {
             Person personOriginal = repository.findById(personID).get();
 

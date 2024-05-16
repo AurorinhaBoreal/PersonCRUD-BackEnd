@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.db.crud.person.dto.AddressDTO;
+import com.db.crud.person.dto.RequestAddressDTO;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreateAddressException;
@@ -14,6 +14,7 @@ import com.db.crud.person.exception.UpdateAddressException;
 import com.db.crud.person.repository.AddressRepository;
 import com.db.crud.person.repository.PersonRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -30,8 +31,8 @@ public class AddressService {
         return repositoryA.findAll();
     }
 
-    
-    public Address create(AddressDTO addressDTO, Long personID) {
+    @Transactional
+    public Address create(RequestAddressDTO addressDTO, Long personID) {
         try {
             Address address = new Address(addressDTO);
             assignAddress(address, personID);
@@ -69,7 +70,8 @@ public class AddressService {
         });
     }
 
-    public Address update(AddressDTO addressUpdate, Long addressID) {
+    @Transactional
+    public Address update(RequestAddressDTO addressUpdate, Long addressID) {
         try {
             Address addressOriginal = repositoryA.findById(addressID).get();
 
