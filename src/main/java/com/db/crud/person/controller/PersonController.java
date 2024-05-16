@@ -9,10 +9,7 @@ import com.db.crud.person.service.PersonService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -35,42 +32,35 @@ import java.util.List;
 @Slf4j
 public class PersonController {
 
-    @Autowired
-    private PersonService personService;
+    @Autowired // Injeção de Dependências - Injetando a Person Repository na Controller
+    private PersonService service;
     
     @GetMapping("/list")
     public List<Person> listPersons() {
-        return personService.list();
+        return service.list();
     }
-
-    @GetMapping("/pageable")
-    public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
-        return personService.findAll(pageable);
-    }
-    
 
     @PostMapping("/create")
-    public ResponseEntity<Person> createUser(@RequestBody @Valid PersonDTO person) {
-        var info = personService.create(new Person(person));
-        return ResponseEntity.status(HttpStatus.CREATED).body(info);
+    public void createUser(@RequestBody @Valid PersonDTO person) {
+        service.verifyCPF(person.getCpf());
+        service.create(new Person(person));
     }
 
     @PatchMapping("/update/{personID}")
-    public ResponseEntity<Person> updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
+    public void updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
         log.info("Atualizando Pessoa: "+person);
-        var info = personService.update(person, personID);
-        return ResponseEntity.status(HttpStatus.OK).body(info);
+        service.update(person, personID);
     }
 
     @DeleteMapping("/delete/{personID}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long personID) {
-        personService.delete(personID);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<String> deleteUser(@PathVariable Long personID) {
+        service.delete(personID);
+        return ResponseEntity.status(HttpStatus.OK).body("A pessoa com ID "+personID+" foi deletada com sucesso!");
     }
 
     @GetMapping("/age/{personID}")
     public ResponseEntity<String> getAge(@PathVariable Long personID) {
-        var info = personService.calcAge(personID);
+        var info = service.calcAge(personID);
         return ResponseEntity.status(HttpStatus.OK).body(info);
     }
     
