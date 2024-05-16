@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tbl_address")
-@Table(name = "tbl_address")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Data
