@@ -16,6 +16,7 @@ import com.db.crud.person.exception.CreatePersonException;
 import com.db.crud.person.exception.DeletePersonException;
 import com.db.crud.person.exception.GetInfoException;
 import com.db.crud.person.exception.UpdatePersonException;
+import com.db.crud.person.mapper.PersonMapper;
 import com.db.crud.person.repository.PersonRepository;
 
 import jakarta.transaction.Transactional;
@@ -32,11 +33,16 @@ public class PersonService {
         return repository.findAll();
     }
 
+    // TODO: FIX AFTER MAPPER
     public Page<Object> findAll(Pageable pageable) {
         try {
             log.info("Pessoas Registradas:");
-            return repository.findAll(pageable).map(ResponsePersonDTO::new);
             
+            return repository.findAll(pageable).map(person -> {
+                calcAge(person);
+                return new ResponsePersonDTO(person);
+            });
+                
         } catch (Exception e) {
             throw new GetInfoException("Erro ao mostrar páginação!");
         }
@@ -50,36 +56,39 @@ public class PersonService {
     }
 
     @Transactional
-    public Person create(Person person) {
+    public ResponsePersonDTO create(Person person) {
         try {
             verifyCPF(person.getCpf());
             repository.save(person);
-            log.info("Pessoa criada com sucesso. Pessoa: "+person); 
-            return person;
+            log.info("Pessoa criada com sucesso. Pessoa: "+person);
+            ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(person);
+            return responsePerson;
         } catch (Exception e) {
             throw new CreatePersonException("Não foi possivel criar a pessoa!");
         }
     }
 
     @Transactional
-    public Person update(RequestPersonDTO personUpdate, Long personID) {
+    public ResponsePersonDTO update(RequestPersonDTO personUpdate, Long personId) {
         try {
-            Person personOriginal = repository.findById(personID).get();
+            Person personOriginal = repository.findById(personId).get();
 
-            personOriginal.setFirstName(personUpdate.getFirstName());
-            personOriginal.setLastName(personUpdate.getLastName());
-            personOriginal.setCpf(personUpdate.getCpf());
-            personOriginal.setBirthDate(personUpdate.getBirthDate());
+            personOriginal.setFirstName(personUpdate.firstName());
+            personOriginal.setLastName(personUpdate.lastName());
+            personOriginal.setCpf(personUpdate.cpf());
+            personOriginal.setBirthDate(personUpdate.birthDate());
             repository.save(personOriginal);
-            return personOriginal;
+
+            ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(personOriginal);
+            return responsePerson;
         } catch (Exception e) {
             throw new UpdatePersonException("Não foi possivel atualizar os dados de Pessoa");
         }
     }
 
-    public Person delete(Long personID) {
+    public Person delete(Long personId) {
         try {
-            Person person = repository.findById(personID).get();
+            Person person = repository.findById(personId).get();
             repository.delete(person);
             return person;
         } catch (Exception e) {
@@ -87,17 +96,16 @@ public class PersonService {
         }
     }
 
-    public Object[] calcAge(Long personID) {
+    public Integer calcAge(Person person) {
         try {
-            Person person = repository.findById(personID).get();
+            
             LocalDate birthDate = person.getBirthDate();
             LocalDate currentDate = LocalDate.now();
             
             int age = Period.between(birthDate, currentDate).getYears();
-            String name = person.getFirstName();
+            person.setAge(age);
+            return age;
 
-            Object[] info = new Object[]{name, age};
-            return info;
         } catch (Exception e) {
             throw new GetInfoException("Não foi possivel calcular a idade.");
         }
