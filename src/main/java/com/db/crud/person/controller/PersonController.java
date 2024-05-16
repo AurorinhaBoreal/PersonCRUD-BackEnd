@@ -38,7 +38,7 @@ public class PersonController {
     @Autowired
     private PersonService personService;
     
-    @GetMapping("/list")
+    @GetMapping
     public List<Person> listPersons() {
         return personService.list();
     }

@@ -30,7 +30,7 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
     
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<List<Address>> listAddress() {
         var body = addressService.list();
 
