@@ -28,11 +28,11 @@ import java.util.List;
 public class AddressController {    
 
     @Autowired
-    private AddressService service;
+    private AddressService addressService;
     
     @GetMapping("/list")
     public ResponseEntity<List<Address>> listAddress() {
-        var body = service.list();
+        var body = addressService.list();
 
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
@@ -40,7 +40,7 @@ public class AddressController {
     @PostMapping("/create/{personID}")
     public ResponseEntity<Address> createAddress(@RequestBody @Valid AddressDTO address, @PathVariable Long personID) {
 
-        var body = service.create(address, personID);
+        var body = addressService.create(address, personID);
 
         log.info("O Corpo do endereço: \\n"+address);
 
@@ -51,16 +51,16 @@ public class AddressController {
     @PatchMapping("/update/{addressID}")
     public ResponseEntity<Address> updateAddress(@RequestBody @Valid AddressDTO address, @PathVariable Long addressID) {
 
-        var body = service.update(address, addressID);
+        var body = addressService.update(address, addressID);
         
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
     
     @DeleteMapping("/delete/{addressID}")
-    public ResponseEntity<String> deleteAddress(@PathVariable Long addressID) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable Long addressID) {
         
-        service.delete(addressID);
+        addressService.delete(addressID);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Endereço com ID "+addressID+" foi deletado com sucesso!");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

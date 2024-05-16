@@ -4,11 +4,13 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import com.db.crud.person.dto.PersonDTO;
+import com.db.crud.person.dto.PersonPageableDTO;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreatePersonException;
 import com.db.crud.person.exception.DeletePersonException;
@@ -28,14 +30,26 @@ public class PersonService {
         return repository.findAll();
     }
 
-    public void verifyCPF(String cpf) {
+    public Page<Object> findAll(Pageable pageable) {
+        try {
+            log.info("Pessoas Registradas:");
+            return repository.findAll(pageable).map(PersonPageableDTO::new);
+            
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Erro ao mostrar páginação!");
+        }
+    }
+
+    private boolean verifyCPF(String cpf) {
         if (repository.existsByCpf(cpf) == true) {
             throw new CreatePersonException("Já existe um usuario com esse CPF!");
         }
+        return false;
     }
 
     public Person create(Person person) {
         try {
+            verifyCPF(person.getCpf());
             repository.save(person);
             log.info("Pessoa criada com sucesso. Pessoa: "+person); 
             return person;
@@ -59,13 +73,14 @@ public class PersonService {
         }
     }
 
-    public void delete(Long personID) {
+    public Person delete(Long personID) {
         try {
-            repository.deleteById(personID);    
+            Person person = repository.findById(personID).get();
+            repository.delete(person);
+            return person;
         } catch (Exception e) {
             throw new DeletePersonException("Não foi possivel deletar a Pessoa!");
         }
-        
     }
 
     public String calcAge(Long personID) {
