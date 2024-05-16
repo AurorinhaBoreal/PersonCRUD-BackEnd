@@ -2,7 +2,8 @@ package com.db.crud.person.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.db.crud.person.dto.AddressDTO;
+import com.db.crud.person.dto.RequestAddressDTO;
+import com.db.crud.person.dto.ResponseAddressDTO;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.service.AddressService;
 
@@ -37,10 +38,10 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @PostMapping("/create/{personID}")
-    public ResponseEntity<Address> createAddress(@RequestBody @Valid AddressDTO address, @PathVariable Long personID) {
+    @PostMapping("/create/{personId}")
+    public ResponseEntity<ResponseAddressDTO> createAddress(@RequestBody @Valid RequestAddressDTO address, @PathVariable Long personId) {
 
-        var body = addressService.create(address, personID);
+        var body = addressService.create(address, personId);
 
         log.info("O Corpo do endereço: \\n"+address);
 
@@ -48,18 +49,18 @@ public class AddressController {
         
     }
 
-    @PatchMapping("/update/{addressID}")
-    public ResponseEntity<Address> updateAddress(@RequestBody @Valid AddressDTO address, @PathVariable Long addressID) {
+    @PatchMapping("/update/{addressId}")
+    public ResponseEntity<ResponseAddressDTO> updateAddress(@RequestBody @Valid RequestAddressDTO address, @PathVariable Long addressId) {
 
-        var body = addressService.update(address, addressID);
+        var body = addressService.update(address, addressId);
         
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
     
-    @DeleteMapping("/delete/{addressID}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable Long addressID) {
+    @DeleteMapping("/delete/{addressId}")
+    public ResponseEntity<Void> deleteAddress(@PathVariable Long addressId) {
         
-        addressService.delete(addressID);
+        addressService.delete(addressId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

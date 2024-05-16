@@ -2,8 +2,10 @@ package com.db.crud.person.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.db.crud.person.dto.PersonDTO;
+import com.db.crud.person.dto.RequestPersonDTO;
+import com.db.crud.person.dto.ResponsePersonDTO;
 import com.db.crud.person.entity.Person;
+import com.db.crud.person.mapper.PersonMapper;
 import com.db.crud.person.service.PersonService;
 
 import jakarta.validation.Valid;
@@ -50,28 +52,23 @@ public class PersonController {
     
 
     @PostMapping("/create")
-    public ResponseEntity<Person> createUser(@RequestBody @Valid PersonDTO person) {
-        var info = personService.create(new Person(person));
-        return ResponseEntity.status(HttpStatus.CREATED).body(info);
+    public ResponseEntity<ResponsePersonDTO> createUser(@RequestBody @Valid RequestPersonDTO personDTO) {
+        Person person = PersonMapper.INSTANCE.dtoToPerson(personDTO);
+        var body = personService.create(person);
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
-    @PatchMapping("/update/{personID}")
-    public ResponseEntity<Person> updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
+    @PatchMapping("/update/{personId}")
+    public ResponseEntity<ResponsePersonDTO> updateUser(@RequestBody @Valid RequestPersonDTO person, @PathVariable Long personId) {
         log.info("Atualizando Pessoa: "+person);
-        var info = personService.update(person, personID);
-        return ResponseEntity.status(HttpStatus.OK).body(info);
+        var body = personService.update(person, personId);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @DeleteMapping("/delete/{personID}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long personID) {
-        personService.delete(personID);
+    @DeleteMapping("/delete/{personId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long personId) {
+        personService.delete(personId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/age/{personID}")
-    public ResponseEntity<String> getAge(@PathVariable Long personID) {
-        var info = personService.calcAge(personID);
-        return ResponseEntity.status(HttpStatus.OK).body("O usuário "+info[0]+" possui "+info[1]+" anos!");
     }
     
 }
