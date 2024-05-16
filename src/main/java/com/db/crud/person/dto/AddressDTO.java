@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+// TODO: FIX CODE BECAUSE OF RECORD!!
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

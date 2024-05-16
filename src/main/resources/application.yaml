@@ -7,8 +7,3 @@ spring:
     hibernate:
       ddl-auto: update # Or "create-drop"
     show-sql: true
-# flyway:
-#   url: ${DB_URL}
-#   schemas: USERSERVICE
-#   user: ${POSTGRES_USER}
-#   password: ${POSTGRES_PASSWORD}

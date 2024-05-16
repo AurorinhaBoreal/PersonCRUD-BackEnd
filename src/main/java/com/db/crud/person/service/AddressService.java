@@ -62,7 +62,7 @@ public class AddressService {
         List<Address> addresses = person.getAddress();
 
         addresses.forEach((element) -> {
-            if (element.isMainAddress() == true) {
+            if (element.isMainAddress()) {
                 throw new CreateAddressException("Ja existe um endereço principal!"
                 );
             }
