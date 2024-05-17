@@ -22,8 +22,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.db.crud.person.dto.AddressDTO;
-import com.db.crud.person.dto.PersonDTO;
+import com.db.crud.person.dto.RequestAddressDTO;
+import com.db.crud.person.dto.RequestPersonDTO;
+import com.db.crud.person.dto.ResponseAddressDTO;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.CreateAddressException;
@@ -46,24 +47,22 @@ public class AddressServiceTests {
 
     @InjectMocks
     AddressService addressService;
-
-    PersonDTO personDTO;
-    Person person;;
-
-    AddressDTO addressDTO;
+    RequestPersonDTO personDTO;
+    Person person;
+    RequestAddressDTO addressDTO;
     Address address;
     
     List<Address> addresses = new ArrayList<>();
 
     @BeforeEach
     void addressSetup() {
-        personDTO = new PersonDTO("Aurora", "Kruschewsky", "37491502814", LocalDate.of(2004, 05, 14));
+        personDTO = new RequestPersonDTO("Aurora", "Kruschewsky", "37491502814", LocalDate.of(2004, 05, 14));
         person = new Person(personDTO);
-        person.setID(111L);
+        person.setId(111L);
 
-        addressDTO = new AddressDTO("06453225","Estrada Ferreira Silva","143","Apt 5A","Vizinhança Curiosa","Osasco","SP","Brasil", false);
+        addressDTO = new RequestAddressDTO("06453225","Estrada Ferreira Silva","143","Apt 5A","Vizinhança Curiosa","Osasco","SP","Brasil", false);
         address = new Address(addressDTO);
-        address.setID(111L);
+        address.setId(111L);
         
         
     }
@@ -81,23 +80,23 @@ public class AddressServiceTests {
     @Test
     @DisplayName("Happy Test: Should Create Address Assigned to a Person")
     void createAddress() {
-        when(personRepository.findById(person.getID())).thenReturn(Optional.of(person));
+        when(personRepository.findByCpf(person.getCpf())).thenReturn(Optional.of(person));
         when(addressRepository.save(any())).thenReturn(address);
 
-        Address addressCreated = addressService.create(addressDTO, person.getID());
+        ResponseAddressDTO addressCreated = addressService.create(addressDTO, person.getCpf());
 
-        assertNotNull(addressCreated.getPersonID());
-        assertEquals(addressDTO.getCity(), address.getCity());
-        assertEquals(addressDTO.getNeighborhood(), address.getNeighborhood());
-        assertEquals(addressDTO.isMainAddress(), address.isMainAddress());
+        assertNotNull(addressCreated);
+        assertEquals(addressDTO.city(), address.getCity());
+        assertEquals(addressDTO.neighborhood(), address.getNeighborhood());
+        assertEquals(addressDTO.mainAddress(), address.isMainAddress());
     }
 
     @Test
     @DisplayName("Sad Test: Should thrown CreateAddressException of create")
     void thrownCreateAddressException() {
         CreateAddressException thrown = assertThrows(CreateAddressException.class, () -> {
-            when(personRepository.findById(person.getID())).thenReturn(Optional.empty());
-            addressService.create(addressDTO, person.getID());
+            when(personRepository.findByCpf(person.getCpf())).thenReturn(Optional.empty());
+            addressService.create(addressDTO, person.getCpf());
         });
         
         assertEquals("Não foi possivel criar o endereço!", thrown.getMessage());
@@ -117,13 +116,13 @@ public class AddressServiceTests {
     @DisplayName("Sad Test: Should thrown CreateAddressException of verifyMainAddress")
     void thrownVerifyMainAddressException() {
         CreateAddressException thrown = assertThrows(CreateAddressException.class, () -> {
-            when(personRepository.findById(111L)).thenReturn(Optional.of(person));
+            when(personRepository.findByCpf("37491502814")).thenReturn(Optional.of(person));
 
             address.setMainAddress(true);
             addresses.add(address);
 
             person.setAddress(addresses);
-            addressService.verifyMainAddress(address, 111L);
+            addressService.verifyMainAddress(address, "37491502814");
 
         });
         
@@ -135,14 +134,14 @@ public class AddressServiceTests {
     void updateAddress() {
         when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
 
-        AddressDTO addressUpdated = new AddressDTO("06453225","Estrada Maneirinha","112","Casa 3","Vizinhança Legau","São Paulo","RJ","Brasil", true);
+        RequestAddressDTO addressUpdated = new RequestAddressDTO("06453225","Estrada Maneirinha","112","Casa 3","Vizinhança Legau","São Paulo","RJ","Brasil", true);
         Address address2 = new Address(addressUpdated);
-        address2.setID(112L);
+        address2.setId(112L);
 
         addressService.update(addressUpdated, 112L);
 
         assertNotNull(addressUpdated);
-        assertEquals("Estrada Maneirinha", addressUpdated.getStreet());
+        assertEquals("Estrada Maneirinha", addressUpdated.street());
     }
 
     @Test
@@ -160,7 +159,7 @@ public class AddressServiceTests {
     void deleteAddress() {
         when(addressRepository.findById(111L)).thenReturn(Optional.of(address));
         
-        addressService.delete(address.getID());
+        addressService.delete(address.getId());
 
         verify(addressRepository, times(1)).delete(address);
     }

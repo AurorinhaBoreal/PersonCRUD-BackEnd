@@ -27,18 +27,17 @@ import lombok.extern.slf4j.Slf4j;
 public class PersonService {
 
     @Autowired
-    PersonRepository repository;
+    PersonRepository personRepository;
 
     public List<Person> list() {
-        return repository.findAll();
+        return personRepository.findAll();
     }
 
-    // TODO: FIX AFTER MAPPER
     public Page<Object> findAll(Pageable pageable) {
         try {
             log.info("Pessoas Registradas:");
             
-            return repository.findAll(pageable).map(person -> {
+            return personRepository.findAll(pageable).map(person -> {
                 calcAge(person);
                 return new ResponsePersonDTO(person);
             });
@@ -49,7 +48,7 @@ public class PersonService {
     }
 
     private boolean verifyCPF(String cpf) {
-        if (repository.existsByCpf(cpf) == true) {
+        if (personRepository.existsByCpf(cpf) == true) {
             throw new CreatePersonException("Já existe um usuario com esse CPF!");
         }
         return false;
@@ -59,7 +58,7 @@ public class PersonService {
     public ResponsePersonDTO create(Person person) {
         try {
             verifyCPF(person.getCpf());
-            repository.save(person);
+            personRepository.save(person);
             log.info("Pessoa criada com sucesso. Pessoa: "+person);
             ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(person);
             return responsePerson;
@@ -69,15 +68,15 @@ public class PersonService {
     }
 
     @Transactional
-    public ResponsePersonDTO update(RequestPersonDTO personUpdate, Long personId) {
+    public ResponsePersonDTO update(RequestPersonDTO personUpdate, String cpf) {
         try {
-            Person personOriginal = repository.findById(personId).get();
+            Person personOriginal = findPerson(cpf);
 
             personOriginal.setFirstName(personUpdate.firstName());
             personOriginal.setLastName(personUpdate.lastName());
             personOriginal.setCpf(personUpdate.cpf());
             personOriginal.setBirthDate(personUpdate.birthDate());
-            repository.save(personOriginal);
+            personRepository.save(personOriginal);
 
             ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(personOriginal);
             return responsePerson;
@@ -86,10 +85,11 @@ public class PersonService {
         }
     }
 
-    public Person delete(Long personId) {
+    public Person delete(String cpf) {
         try {
-            Person person = repository.findById(personId).get();
-            repository.delete(person);
+            Person person = personRepository.findById(1L).get();
+            log.info(cpf, person);
+            personRepository.delete(person);
             return person;
         } catch (Exception e) {
             throw new DeletePersonException("Não foi possivel deletar a Pessoa!");
@@ -111,4 +111,8 @@ public class PersonService {
         }
     }
 
+    public Person findPerson(String Cpf) {
+        Person person = personRepository.findByCpf(Cpf).get();
+        return person;
+    }
 }

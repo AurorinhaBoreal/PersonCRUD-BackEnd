@@ -58,16 +58,16 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
-    @PatchMapping("/update/{personId}")
-    public ResponseEntity<ResponsePersonDTO> updateUser(@RequestBody @Valid RequestPersonDTO person, @PathVariable Long personId) {
+    @PatchMapping("/update/{personCpf}")
+    public ResponseEntity<ResponsePersonDTO> updateUser(@RequestBody @Valid RequestPersonDTO person, @PathVariable String personCpf) {
         log.info("Atualizando Pessoa: "+person);
-        var body = personService.update(person, personId);
+        var body = personService.update(person, personCpf);
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @DeleteMapping("/delete/{personId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long personId) {
-        personService.delete(personId);
+    @DeleteMapping("/delete/{personCpf}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String personCpf) {
+        personService.delete(personCpf);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     

@@ -24,24 +24,27 @@ import lombok.extern.slf4j.Slf4j;
 public class AddressService {
     
     @Autowired
-    AddressRepository repositoryA;
+    AddressRepository addressRepository;
 
     @Autowired
-    PersonRepository repositoryP;
+    PersonRepository personRepository;
+
+    @Autowired
+    PersonService personService;
 
     public List<Address> list() {
-        return repositoryA.findAll();
+        return addressRepository.findAll();
     }
 
     @Transactional
-    public ResponseAddressDTO create(RequestAddressDTO addressDTO, Long personId) {
+    public ResponseAddressDTO create(RequestAddressDTO addressDTO, String personCpf) {
         try {
             Address address = new Address(addressDTO);
-            assignAddress(address, personId);
+            assignAddress(address, personCpf);
 
-            if (address.isMainAddress() == true) verifyMainAddress(address, personId);
+            if (address.isMainAddress() == true) verifyMainAddress(address, personCpf);
 
-            repositoryA.save(address);
+            addressRepository.save(address);
             ResponseAddressDTO responseAddress = AddressMapper.INSTANCE.addressToDto(address);
             return responseAddress;
         } catch (Exception e) {
@@ -49,9 +52,9 @@ public class AddressService {
         }
     }
 
-    public Address assignAddress(Address address, Long personId) {
+    public Address assignAddress(Address address, String personCpf) {
         try {
-            Person person = repositoryP.findById(personId).get();
+            Person person = personService.findPerson(personCpf);
             address.setPersonId(person);
             return address;
         } catch (Exception e) {
@@ -59,8 +62,8 @@ public class AddressService {
         }
     }
 
-    public void verifyMainAddress(Address address, Long personId) {
-        Person person = repositoryP.findById(personId).get();
+    public void verifyMainAddress(Address address, String personCpf) {
+        Person person = personService.findPerson(personCpf);
 
         List<Address> addresses = person.getAddress();
 
@@ -75,7 +78,7 @@ public class AddressService {
     @Transactional
     public ResponseAddressDTO update(RequestAddressDTO addressUpdate, Long addressId) {
         try {
-            Address addressOriginal = repositoryA.findById(addressId).get();
+            Address addressOriginal = addressRepository.findById(addressId).get();
 
             addressOriginal.setZipCode(addressUpdate.zipCode());
             addressOriginal.setStreet(addressUpdate.street());
@@ -85,7 +88,7 @@ public class AddressService {
             addressOriginal.setUf(addressUpdate.uf());
             addressOriginal.setCountry(addressUpdate.country());
             addressOriginal.setMainAddress(addressUpdate.mainAddress());
-            repositoryA.save(addressOriginal);
+            addressRepository.save(addressOriginal);
 
             log.info("O endereço atual é o principal? "+addressOriginal.isMainAddress());
             ResponseAddressDTO responseAddress = AddressMapper.INSTANCE.addressToDto(addressOriginal);
@@ -97,9 +100,9 @@ public class AddressService {
 
     public void delete(Long addressId) {
         try {
-            Address address = repositoryA.findById(addressId).get();
+            Address address = addressRepository.findById(addressId).get();
             
-            repositoryA.delete(address);
+            addressRepository.delete(address);
 
             log.info("The Address was deleted. Id: "+addressId);
         } catch (Exception e) {
