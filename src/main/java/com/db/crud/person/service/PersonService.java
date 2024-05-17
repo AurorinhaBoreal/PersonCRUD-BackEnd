@@ -2,7 +2,6 @@ package com.db.crud.person.service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +26,6 @@ public class PersonService {
     @Autowired
     PersonRepository personRepository;
 
-    // TODO: Verify if this method is really necessary
-    // public List<Person> list() {
-    //     return personRepository.findAll();
-    // }
-
     public Page<Object> findAll(Pageable pageable) {
         log.info("Pessoas Registradas:");
         
@@ -51,7 +45,7 @@ public class PersonService {
     @Transactional
     public ResponsePersonDTO create(Person person) {
             verifyCPF(person.getCpf());
-
+            calcAge(person);
             personRepository.save(person);
             log.info("Successfully created Person. Person: "+person);
 

@@ -26,9 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
-
-
 
 
 @RestController
@@ -39,14 +36,8 @@ public class PersonController {
 
     @Autowired
     private PersonService personService;
-    
-    // TODO: Verify if this endpoint is really needed
-    // @GetMapping
-    // public List<Person> listPersons() {
-    //     return personService.list();
-    // }
 
-    @GetMapping("/pageable")
+    @GetMapping
     public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
         return personService.findAll(pageable);
     }

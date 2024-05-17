@@ -52,11 +52,11 @@ public class Person {
     private LocalDate birthDate;
 
     @Transient
-    private Integer age = 0;
+    private Integer age;
     
     @OneToMany(mappedBy = "personId", cascade = CascadeType.ALL)
     @Valid
-    private List<Address> address = new ArrayList<>();
+    final List<Address> address = new ArrayList<>();
 
 
     public Person(RequestPersonDTO person) {
