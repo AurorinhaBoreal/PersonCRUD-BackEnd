@@ -40,10 +40,11 @@ public class PersonController {
     @Autowired
     private PersonService personService;
     
-    @GetMapping
-    public List<Person> listPersons() {
-        return personService.list();
-    }
+    // TODO: Verify if this endpoint is really needed
+    // @GetMapping
+    // public List<Person> listPersons() {
+    //     return personService.list();
+    // }
 
     @GetMapping("/pageable")
     public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {

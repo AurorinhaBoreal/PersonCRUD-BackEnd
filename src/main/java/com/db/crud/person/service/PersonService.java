@@ -12,10 +12,8 @@ import org.springframework.data.domain.Page;
 import com.db.crud.person.dto.RequestPersonDTO;
 import com.db.crud.person.dto.ResponsePersonDTO;
 import com.db.crud.person.entity.Person;
-import com.db.crud.person.exception.CreatePersonException;
-import com.db.crud.person.exception.DeletePersonException;
-import com.db.crud.person.exception.GetInfoException;
-import com.db.crud.person.exception.UpdatePersonException;
+import com.db.crud.person.exception.DuplicateCpfException;
+import com.db.crud.person.exception.PersonNotFoundException;
 import com.db.crud.person.mapper.PersonMapper;
 import com.db.crud.person.repository.PersonRepository;
 
@@ -29,90 +27,71 @@ public class PersonService {
     @Autowired
     PersonRepository personRepository;
 
-    public List<Person> list() {
-        return personRepository.findAll();
-    }
+    // TODO: Verify if this method is really necessary
+    // public List<Person> list() {
+    //     return personRepository.findAll();
+    // }
 
     public Page<Object> findAll(Pageable pageable) {
-        try {
-            log.info("Pessoas Registradas:");
-            
-            return personRepository.findAll(pageable).map(person -> {
-                calcAge(person);
-                return new ResponsePersonDTO(person);
-            });
-                
-        } catch (Exception e) {
-            throw new GetInfoException("Erro ao mostrar páginação!");
-        }
+        log.info("Pessoas Registradas:");
+        
+        return personRepository.findAll(pageable).map(person -> {
+            calcAge(person);
+            return new ResponsePersonDTO(person);
+        });
     }
 
     private boolean verifyCPF(String cpf) {
-        if (personRepository.existsByCpf(cpf) == true) {
-            throw new CreatePersonException("Já existe um usuario com esse CPF!");
+        if (personRepository.existsByCpf(cpf)) {
+            throw new DuplicateCpfException("Already exists a person with this cpf!");
         }
         return false;
     }
 
     @Transactional
     public ResponsePersonDTO create(Person person) {
-        try {
             verifyCPF(person.getCpf());
+
             personRepository.save(person);
-            log.info("Pessoa criada com sucesso. Pessoa: "+person);
+            log.info("Successfully created Person. Person: "+person);
+
             ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(person);
             return responsePerson;
-        } catch (Exception e) {
-            throw new CreatePersonException("Não foi possivel criar a pessoa!");
-        }
     }
 
     @Transactional
     public ResponsePersonDTO update(RequestPersonDTO personUpdate, String cpf) {
-        try {
-            Person personOriginal = findPerson(cpf);
+        Person personOriginal = findPerson(cpf);
 
-            personOriginal.setFirstName(personUpdate.firstName());
-            personOriginal.setLastName(personUpdate.lastName());
-            personOriginal.setCpf(personUpdate.cpf());
-            personOriginal.setBirthDate(personUpdate.birthDate());
-            personRepository.save(personOriginal);
+        personOriginal.setFirstName(personUpdate.firstName());
+        personOriginal.setLastName(personUpdate.lastName());
+        personOriginal.setCpf(personUpdate.cpf());
+        personOriginal.setBirthDate(personUpdate.birthDate());
+        personRepository.save(personOriginal);
 
-            ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(personOriginal);
-            return responsePerson;
-        } catch (Exception e) {
-            throw new UpdatePersonException("Não foi possivel atualizar os dados de Pessoa");
-        }
+        ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(personOriginal);
+        return responsePerson;
     }
 
     public Person delete(String cpf) {
-        try {
-            Person person = personRepository.findById(1L).get();
-            log.info(cpf, person);
-            personRepository.delete(person);
-            return person;
-        } catch (Exception e) {
-            throw new DeletePersonException("Não foi possivel deletar a Pessoa!");
-        }
+        Person person = findPerson(cpf);
+
+        personRepository.delete(person);
+        return person;
     }
 
     public Integer calcAge(Person person) {
-        try {
-            
-            LocalDate birthDate = person.getBirthDate();
-            LocalDate currentDate = LocalDate.now();
-            
-            int age = Period.between(birthDate, currentDate).getYears();
-            person.setAge(age);
-            return age;
-
-        } catch (Exception e) {
-            throw new GetInfoException("Não foi possivel calcular a idade.");
-        }
+        LocalDate birthDate = person.getBirthDate();
+        LocalDate currentDate = LocalDate.now();
+        
+        int age = Period.between(birthDate, currentDate).getYears();
+        person.setAge(age);
+        return age;
     }
 
-    public Person findPerson(String Cpf) {
-        Person person = personRepository.findByCpf(Cpf).get();
+    public Person findPerson(String cpf) {
+        Person person = personRepository.findByCpf(cpf).orElseThrow(
+            () -> new PersonNotFoundException("No Person Found with this cpf "+cpf));
         return person;
     }
 }
