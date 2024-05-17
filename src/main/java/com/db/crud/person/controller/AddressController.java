@@ -38,7 +38,7 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @PostMapping("/create/{personId}")
+    @PostMapping("/create/{personCpf}")
     public ResponseEntity<ResponseAddressDTO> createAddress(@RequestBody @Valid RequestAddressDTO address, @PathVariable String personCpf) {
 
         var body = addressService.create(address, personCpf);
