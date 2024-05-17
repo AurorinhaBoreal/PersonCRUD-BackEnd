@@ -41,7 +41,7 @@ public class AddressService {
         Address address = new Address(addressDTO);
         assignAddress(address, personCpf);
 
-        if (address.isMainAddress()) verifyMainAddress(address, personCpf);
+        if (address.isMainAddress()) verifyCreateMainAddress(address, personCpf);
 
         addressRepository.save(address);
         ResponseAddressDTO responseAddress = AddressMapper.INSTANCE.addressToDto(address);
@@ -55,17 +55,7 @@ public class AddressService {
         return address;
     }
 
-    public void verifyMainAddress(Address address, String personCpf) {
-        Person person = personService.findPerson(personCpf);
-        List<Address> addresses = person.getAddress();
-
-        addresses.forEach((element) -> {
-            if (element.isMainAddress()) {
-                throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!"
-                );
-            }
-        });
-    }
+    
 
     @Transactional
     public ResponseAddressDTO update(RequestAddressDTO addressUpdate, Long addressId) {
@@ -89,11 +79,25 @@ public class AddressService {
     public void delete(Long addressId) {
         Address address = findAddress(addressId);
         
+        verifyDeleteMainAddress(address);
         addressRepository.delete(address);
 
         log.info("The Address was deleted. Id: "+addressId);
     }
 
+    public void verifyCreateMainAddress(Address address, String personCpf) {
+        Person person = personService.findPerson(personCpf);
+        if (person.isHasMainAddress()) throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!");
+        person.setHasMainAddress(true);
+    }
+
+    public void verifyDeleteMainAddress(Address address) {
+        if (address.isMainAddress()) {
+            Person person = address.getPersonId();
+            if (person.isHasMainAddress()) person.setHasMainAddress(false);
+        }
+    }
+    
     public Address findAddress(Long addressId) {
         Address address = addressRepository.findById(addressId).orElseThrow(
             () -> new AddressNotFoundException("No Address found with ID: " + addressId));;

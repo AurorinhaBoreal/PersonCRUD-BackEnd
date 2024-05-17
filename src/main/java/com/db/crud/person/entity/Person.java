@@ -51,6 +51,9 @@ public class Person {
     @NotNull(message = "Informe uma data válida!")
     private LocalDate birthDate;
 
+    @Column
+    private boolean hasMainAddress;
+
     @Transient
     private Integer age;
     
@@ -64,5 +67,6 @@ public class Person {
         this.lastName = person.lastName();
         this.cpf = person.cpf();
         this.birthDate = person.birthDate();
+        this.hasMainAddress = false;
     }
 }

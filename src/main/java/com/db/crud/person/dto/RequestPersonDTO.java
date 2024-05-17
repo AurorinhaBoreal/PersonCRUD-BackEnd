@@ -21,6 +21,4 @@ public record RequestPersonDTO(
     String cpf,
 
     @NotNull(message = "Informe uma data válida!")
-    LocalDate birthDate) {   
-    
-}
+    LocalDate birthDate) {}

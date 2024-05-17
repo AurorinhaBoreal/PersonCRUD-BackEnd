@@ -12,9 +12,10 @@ public record ResponsePersonDTO(
     LocalDate birthDate,
     Integer age,
     String cpf,
+    boolean hasMainAddress,
     List<Address> addresses
 ) {
     public ResponsePersonDTO(Person person){
-        this(person.getFirstName(), person.getLastName(), person.getBirthDate(), person.getAge(), person.getCpf(), person.getAddress());
+        this(person.getFirstName(), person.getLastName(), person.getBirthDate(), person.getAge(), person.getCpf(), person.isHasMainAddress(), person.getAddress());
     }
 }
