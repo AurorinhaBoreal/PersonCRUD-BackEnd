@@ -54,7 +54,7 @@ public class Person {
     @Transient
     private Integer age = 0;
     
-    @OneToMany(mappedBy = "personId", cascade = CascadeType.PERSIST) // Identifica a classe pessoa como 1 para muitas em relação a endereço (1:n)
+    @OneToMany(mappedBy = "personId", cascade = CascadeType.ALL)
     @Valid
     private List<Address> address = new ArrayList<>();
 
