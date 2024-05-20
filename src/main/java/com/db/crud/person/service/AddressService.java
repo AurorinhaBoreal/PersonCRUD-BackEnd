@@ -41,7 +41,7 @@ public class AddressService {
         Address address = new Address(addressDTO);
         assignAddress(address, personCpf);
 
-        if (address.isMainAddress()) verifyCreateMainAddress(address, personCpf);
+        if (address.isMainAddress()) verifyCreateMainAddress(personCpf);
 
         addressRepository.save(address);
         ResponseAddressDTO responseAddress = AddressMapper.INSTANCE.addressToDto(address);
@@ -85,7 +85,7 @@ public class AddressService {
         log.info("The Address was deleted. Id: "+addressId);
     }
 
-    public void verifyCreateMainAddress(Address address, String personCpf) {
+    public void verifyCreateMainAddress(String personCpf) {
         Person person = personService.findPerson(personCpf);
         if (person.isHasMainAddress()) throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!");
         person.setHasMainAddress(true);
