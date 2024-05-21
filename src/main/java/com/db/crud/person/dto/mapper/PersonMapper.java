@@ -9,10 +9,7 @@ import com.db.crud.person.entity.Person;
 
 @Mapper(componentModel = "spring")
 public interface PersonMapper {
- 
-    PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);
 
-    // @Mapping(target = "age", ignore = true)
     PersonResponse personToDto(Person person);
 
     Person dtoToPerson(PersonRequest personDTO);

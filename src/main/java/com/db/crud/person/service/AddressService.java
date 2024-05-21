@@ -31,6 +31,9 @@ public class AddressService {
     @Autowired
     PersonService personService;
 
+    @Autowired 
+    AddressMapper addressMapper;
+
     public List<Address> list() {
         return addressRepository.findAll();
     }
@@ -44,7 +47,7 @@ public class AddressService {
         if (address.isMainAddress()) verifyCreateMainAddress(personCpf);
 
         addressRepository.save(address);
-        AddressResponse responseAddress = AddressMapper.INSTANCE.addressToDto(address);
+        AddressResponse responseAddress = addressMapper.addressToDto(address);
         return responseAddress;
     }
 
@@ -75,7 +78,7 @@ public class AddressService {
         addressRepository.save(addressOriginal);        
 
         log.info("The address is the main Address? "+addressOriginal.isMainAddress());
-        AddressResponse responseAddress = AddressMapper.INSTANCE.addressToDto(addressOriginal);
+        AddressResponse responseAddress = addressMapper.addressToDto(addressOriginal);
         return responseAddress;
     }
 

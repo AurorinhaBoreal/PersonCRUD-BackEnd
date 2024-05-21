@@ -9,8 +9,6 @@ import com.db.crud.person.entity.Address;
 
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
-    
-    AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
 
     AddressResponse addressToDto(Address address);
 

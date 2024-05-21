@@ -37,6 +37,9 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+    @Autowired
+    private PersonMapper personMapper;
+
     @GetMapping
     public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
         return personService.findAll(pageable);
@@ -45,7 +48,7 @@ public class PersonController {
 
     @PostMapping("/create")
     public ResponseEntity<PersonResponse> createUser(@RequestBody @Valid PersonRequest personDTO) {
-        Person person = PersonMapper.INSTANCE.dtoToPerson(personDTO);
+        Person person = personMapper.dtoToPerson(personDTO);
         var body = personService.create(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
