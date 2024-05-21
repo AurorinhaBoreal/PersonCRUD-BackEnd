@@ -69,7 +69,10 @@ public class AddressService {
         addressOriginal.setUf(addressUpdate.uf());
         addressOriginal.setCountry(addressUpdate.country());
         addressOriginal.setMainAddress(addressUpdate.mainAddress());
-        addressRepository.save(addressOriginal);
+        
+        verifyUpdateMainAddress(addressOriginal);
+        
+        addressRepository.save(addressOriginal);        
 
         log.info("The address is the main Address? "+addressOriginal.isMainAddress());
         AddressResponse responseAddress = AddressMapper.INSTANCE.addressToDto(addressOriginal);
@@ -87,17 +90,31 @@ public class AddressService {
 
     public void verifyCreateMainAddress(String personCpf) {
         Person person = personService.findPerson(personCpf);
+        
         if (person.isHasMainAddress()) throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!");
+        
         person.setHasMainAddress(true);
     }
 
     public void verifyDeleteMainAddress(Address address) {
+        Person person = address.getPersonId();
+        
         if (address.isMainAddress()) {
-            Person person = address.getPersonId();
             if (person.isHasMainAddress()) person.setHasMainAddress(false);
         }
     }
     
+    public void verifyUpdateMainAddress(Address address) {
+        Person person = address.getPersonId();
+
+        if (address.isMainAddress() && !person.isHasMainAddress()) {
+            person.setHasMainAddress(true);
+        }
+        if (!address.isMainAddress() && person.isHasMainAddress()) {
+            person.setHasMainAddress(false);
+        }
+    }
+
     public Address findAddress(Long addressId) {
         Address address = addressRepository.findById(addressId).orElseThrow(
             () -> new AddressNotFoundException("No Address found with ID: " + addressId));;
