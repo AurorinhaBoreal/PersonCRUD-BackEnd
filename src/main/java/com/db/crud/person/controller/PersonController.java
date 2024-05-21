@@ -44,12 +44,10 @@ public class PersonController {
     public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
         return personService.findAll(pageable);
     }
-    
 
     @PostMapping("/create")
     public ResponseEntity<PersonResponse> createUser(@RequestBody @Valid PersonRequest personDTO) {
-        Person person = personMapper.dtoToPerson(personDTO);
-        var body = personService.create(person);
+        var body = personService.create(personDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 

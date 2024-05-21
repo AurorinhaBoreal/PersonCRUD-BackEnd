@@ -30,7 +30,7 @@ public class PersonService {
     PersonMapper personMapper;
 
     public Page<Object> findAll(Pageable pageable) {
-        log.info("Pessoas Registradas:");
+        log.info("Registered Persons:");
         
         return personRepository.findAll(pageable).map(person -> {
             calcAge(person);
@@ -46,7 +46,8 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonResponse create(Person person) {
+    public PersonResponse create(PersonRequest personDTO) {
+            Person person = personMapper.dtoToPerson(personDTO);
             verifyCPF(person.getCpf());
             calcAge(person);
             personRepository.save(person);
