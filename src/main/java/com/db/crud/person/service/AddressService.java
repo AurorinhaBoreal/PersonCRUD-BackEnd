@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.db.crud.person.dto.RequestAddressDTO;
-import com.db.crud.person.dto.ResponseAddressDTO;
+import com.db.crud.person.dto.mapper.AddressMapper;
+import com.db.crud.person.dto.request.AddressRequest;
+import com.db.crud.person.dto.response.AddressResponse;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.AddressNotFoundException;
 import com.db.crud.person.exception.DuplicateMainAddressException;
-import com.db.crud.person.mapper.AddressMapper;
 import com.db.crud.person.repository.AddressRepository;
 import com.db.crud.person.repository.PersonRepository;
 
@@ -36,7 +36,7 @@ public class AddressService {
     }
 
     @Transactional
-    public ResponseAddressDTO create(RequestAddressDTO addressDTO, String personCpf) {
+    public AddressResponse create(AddressRequest addressDTO, String personCpf) {
 
         Address address = new Address(addressDTO);
         assignAddress(address, personCpf);
@@ -44,7 +44,7 @@ public class AddressService {
         if (address.isMainAddress()) verifyCreateMainAddress(personCpf);
 
         addressRepository.save(address);
-        ResponseAddressDTO responseAddress = AddressMapper.INSTANCE.addressToDto(address);
+        AddressResponse responseAddress = AddressMapper.INSTANCE.addressToDto(address);
         return responseAddress;
     }
 
@@ -58,7 +58,7 @@ public class AddressService {
     
 
     @Transactional
-    public ResponseAddressDTO update(RequestAddressDTO addressUpdate, Long addressId) {
+    public AddressResponse update(AddressRequest addressUpdate, Long addressId) {
         Address addressOriginal = findAddress(addressId);
 
         addressOriginal.setZipCode(addressUpdate.zipCode());
@@ -72,7 +72,7 @@ public class AddressService {
         addressRepository.save(addressOriginal);
 
         log.info("The address is the main Address? "+addressOriginal.isMainAddress());
-        ResponseAddressDTO responseAddress = AddressMapper.INSTANCE.addressToDto(addressOriginal);
+        AddressResponse responseAddress = AddressMapper.INSTANCE.addressToDto(addressOriginal);
         return responseAddress;
     }
 

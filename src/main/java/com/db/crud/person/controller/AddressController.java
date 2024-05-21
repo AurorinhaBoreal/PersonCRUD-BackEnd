@@ -2,8 +2,8 @@ package com.db.crud.person.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.db.crud.person.dto.RequestAddressDTO;
-import com.db.crud.person.dto.ResponseAddressDTO;
+import com.db.crud.person.dto.request.AddressRequest;
+import com.db.crud.person.dto.response.AddressResponse;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.service.AddressService;
 
@@ -39,7 +39,7 @@ public class AddressController {
     }
 
     @PostMapping("/create/{personCpf}")
-    public ResponseEntity<ResponseAddressDTO> createAddress(@RequestBody @Valid RequestAddressDTO address, @PathVariable String personCpf) {
+    public ResponseEntity<AddressResponse> createAddress(@RequestBody @Valid AddressRequest address, @PathVariable String personCpf) {
 
         var body = addressService.create(address, personCpf);
 
@@ -50,7 +50,7 @@ public class AddressController {
     }
 
     @PatchMapping("/update/{addressId}")
-    public ResponseEntity<ResponseAddressDTO> updateAddress(@RequestBody @Valid RequestAddressDTO address, @PathVariable Long addressId) {
+    public ResponseEntity<AddressResponse> updateAddress(@RequestBody @Valid AddressRequest address, @PathVariable Long addressId) {
 
         var body = addressService.update(address, addressId);
         

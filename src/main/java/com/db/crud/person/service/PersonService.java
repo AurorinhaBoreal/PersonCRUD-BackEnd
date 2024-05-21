@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 
-import com.db.crud.person.dto.RequestPersonDTO;
-import com.db.crud.person.dto.ResponsePersonDTO;
+import com.db.crud.person.dto.mapper.PersonMapper;
+import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.response.PersonResponse;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.DuplicateCpfException;
 import com.db.crud.person.exception.PersonNotFoundException;
-import com.db.crud.person.mapper.PersonMapper;
 import com.db.crud.person.repository.PersonRepository;
 
 import jakarta.transaction.Transactional;
@@ -31,7 +31,7 @@ public class PersonService {
         
         return personRepository.findAll(pageable).map(person -> {
             calcAge(person);
-            return new ResponsePersonDTO(person);
+            return new PersonResponse(person);
         });
     }
 
@@ -43,18 +43,18 @@ public class PersonService {
     }
 
     @Transactional
-    public ResponsePersonDTO create(Person person) {
+    public PersonResponse create(Person person) {
             verifyCPF(person.getCpf());
             calcAge(person);
             personRepository.save(person);
             log.info("Successfully created Person. Person: "+person);
 
-            ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(person);
+            PersonResponse responsePerson = PersonMapper.INSTANCE.personToDto(person);
             return responsePerson;
     }
 
     @Transactional
-    public ResponsePersonDTO update(RequestPersonDTO personUpdate, String cpf) {
+    public PersonResponse update(PersonRequest personUpdate, String cpf) {
         Person personOriginal = findPerson(cpf);
 
         personOriginal.setFirstName(personUpdate.firstName());
@@ -63,7 +63,7 @@ public class PersonService {
         personOriginal.setBirthDate(personUpdate.birthDate());
         personRepository.save(personOriginal);
 
-        ResponsePersonDTO responsePerson = PersonMapper.INSTANCE.personToDto(personOriginal);
+        PersonResponse responsePerson = PersonMapper.INSTANCE.personToDto(personOriginal);
         return responsePerson;
     }
 

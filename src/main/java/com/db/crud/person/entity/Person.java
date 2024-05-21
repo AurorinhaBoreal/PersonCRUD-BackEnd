@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.db.crud.person.dto.RequestPersonDTO;
+import com.db.crud.person.dto.request.PersonRequest;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -62,7 +62,7 @@ public class Person {
     final List<Address> address = new ArrayList<>();
 
 
-    public Person(RequestPersonDTO person) {
+    public Person(PersonRequest person) {
         this.firstName = person.firstName();
         this.lastName = person.lastName();
         this.cpf = person.cpf();

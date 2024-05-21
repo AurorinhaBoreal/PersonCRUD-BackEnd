@@ -1,11 +1,11 @@
-package com.db.crud.person.dto;
+package com.db.crud.person.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 
-public record RequestAddressDTO(
+public record AddressRequest(
     @NotBlank(message = "Informe um código postal (CEP)")
     @Size(min = 7, max = 12, message = "Informe um código postal válido")
     String zipCode,

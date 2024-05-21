@@ -2,10 +2,10 @@ package com.db.crud.person.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.db.crud.person.dto.RequestPersonDTO;
-import com.db.crud.person.dto.ResponsePersonDTO;
+import com.db.crud.person.dto.mapper.PersonMapper;
+import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.response.PersonResponse;
 import com.db.crud.person.entity.Person;
-import com.db.crud.person.mapper.PersonMapper;
 import com.db.crud.person.service.PersonService;
 
 import jakarta.validation.Valid;
@@ -44,14 +44,14 @@ public class PersonController {
     
 
     @PostMapping("/create")
-    public ResponseEntity<ResponsePersonDTO> createUser(@RequestBody @Valid RequestPersonDTO personDTO) {
+    public ResponseEntity<PersonResponse> createUser(@RequestBody @Valid PersonRequest personDTO) {
         Person person = PersonMapper.INSTANCE.dtoToPerson(personDTO);
         var body = personService.create(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
     @PatchMapping("/update/{personCpf}")
-    public ResponseEntity<ResponsePersonDTO> updateUser(@RequestBody @Valid RequestPersonDTO person, @PathVariable String personCpf) {
+    public ResponseEntity<PersonResponse> updateUser(@RequestBody @Valid PersonRequest person, @PathVariable String personCpf) {
         log.info("Atualizando Pessoa: "+person);
         var body = personService.update(person, personCpf);
         return ResponseEntity.status(HttpStatus.OK).body(body);

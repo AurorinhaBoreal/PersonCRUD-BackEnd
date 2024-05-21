@@ -1,6 +1,6 @@
 package com.db.crud.person.entity;
 
-import com.db.crud.person.dto.RequestAddressDTO;
+import com.db.crud.person.dto.request.AddressRequest;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
@@ -63,7 +63,7 @@ public class Address {
     @Column(nullable = false)
     private boolean mainAddress;
 
-    public Address(RequestAddressDTO address) {
+    public Address(AddressRequest address) {
         this.zipCode = address.zipCode();
         this.street = address.street();
         this.number = address.number();

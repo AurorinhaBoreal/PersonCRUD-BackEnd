@@ -1,4 +1,4 @@
-package com.db.crud.person.dto;
+package com.db.crud.person.dto.request;
 
 import java.time.LocalDate;
 
@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CPF;
 
 
-public record RequestPersonDTO( 
+public record PersonRequest( 
     @NotBlank(message = "Primeiro nome não pode ser vazio")
     String firstName,
 
