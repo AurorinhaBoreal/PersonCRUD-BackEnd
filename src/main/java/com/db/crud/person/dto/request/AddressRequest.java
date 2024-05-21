@@ -6,32 +6,32 @@ import jakarta.validation.constraints.Size;
 
 
 public record AddressRequest(
-    @NotBlank(message = "Informe um código postal (CEP)")
-    @Size(min = 7, max = 12, message = "Informe um código postal válido")
+    @NotBlank(message = "A ZIP Code must be informed!")
+    @Size(min = 7, max = 12, message = "ZIP Code must be valid!")
     String zipCode,
 
-    @NotBlank(message = "Informe uma rua!")
+    @NotBlank(message = "A Street must be informed!")
     String street,
 
-    @NotBlank(message = "Informe um número!")
+    @NotBlank(message = "A number must be informed!")
     String number,
 
     String complement,
 
-    @NotBlank(message = "Informe um logradouro!")
+    @NotBlank(message = "A neighborhood must be informed!")
     String neighborhood,
 
-    @NotBlank(message = "Informe uma cidade!")
+    @NotBlank(message = "A street must be informed!")
     String city,
 
-    @NotBlank(message = "Informe uma sigla para o estado!")
-    @Size(min = 2, max = 2, message = "Sigla inválida!")
+    @NotBlank(message = "A state abbreviation must be informed!")
+    @Size(min = 2, max = 2, message = "Invalid abbreviation!")
     String uf,
 
-    @NotBlank(message = "Informe um país!")
+    @NotBlank(message = "A country must be informed!")
     String country,
 
-    @NotNull(message = "Especifique se é o endereço principal ou não")
+    @NotNull(message = "Specify if is the main address or not!")
     boolean mainAddress
 ) {
 }

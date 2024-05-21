@@ -52,7 +52,7 @@ public class PersonController {
 
     @PatchMapping("/update/{personCpf}")
     public ResponseEntity<PersonResponse> updateUser(@RequestBody @Valid PersonRequest person, @PathVariable String personCpf) {
-        log.info("Atualizando Pessoa: "+person);
+        log.info("Updating Person: "+person);
         var body = personService.update(person, personCpf);
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }

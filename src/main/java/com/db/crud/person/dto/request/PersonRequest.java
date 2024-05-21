@@ -10,15 +10,15 @@ import org.hibernate.validator.constraints.br.CPF;
 
 
 public record PersonRequest( 
-    @NotBlank(message = "Primeiro nome não pode ser vazio")
+    @NotBlank(message = "First name cannot be empty!")
     String firstName,
 
-    @NotBlank(message = "Último nome não pode ser vazio")
+    @NotBlank(message = "Last name cannot be empty!")
     String lastName,
 
-    @NotBlank(message = "Informe um CPF!")
-    @CPF(message = "CPF Inválido!")
+    @NotBlank(message = "CPF cannot be empty!")
+    @CPF(message = "Invalid CPF!")
     String cpf,
 
-    @NotNull(message = "Informe uma data válida!")
+    @NotNull(message = "Data must be valid!")
     LocalDate birthDate) {}

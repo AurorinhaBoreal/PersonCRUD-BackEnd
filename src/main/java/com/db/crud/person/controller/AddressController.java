@@ -43,7 +43,7 @@ public class AddressController {
 
         var body = addressService.create(address, personCpf);
 
-        log.info("O Corpo do endereço: \\n"+address);
+        log.info("Address Body: \\n"+address);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
         

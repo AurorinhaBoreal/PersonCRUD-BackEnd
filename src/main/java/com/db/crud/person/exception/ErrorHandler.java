@@ -47,7 +47,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleErrorNoSuchElementException(NoSuchElementException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("An Required field was not filled.");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A required field was not filled.");
     }
 
     @ExceptionHandler(DuplicateMainAddressException.class)
