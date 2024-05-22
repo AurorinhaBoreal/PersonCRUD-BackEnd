@@ -41,10 +41,8 @@ public class AddressService {
     @Transactional
     public AddressResponse create(AddressRequest addressDTO, String personCpf) {
 
-        Address address = new Address(addressDTO);
+        Address address = AddressMapper.dtoToAddress(addressDTO);
         assignAddress(address, personCpf);
-
-        if (address.isMainAddress()) verifyCreateMainAddress(personCpf);
 
         addressRepository.save(address);
         AddressResponse responseAddress = addressMapper.addressToDto(address);
@@ -54,6 +52,11 @@ public class AddressService {
     public Address assignAddress(Address address, String personCpf) {
         Person person = personService.findPerson(personCpf);
         
+        if (address.isMainAddress()) {
+            verifyDuplicateMainAddress(person, address.isMainAddress());
+        }
+        
+        person.setHasMainAddress(true);
         address.setPersonId(person);
         return address;
     }
@@ -73,7 +76,7 @@ public class AddressService {
         addressOriginal.setCountry(addressUpdate.country());
         addressOriginal.setMainAddress(addressUpdate.mainAddress());
         
-        verifyUpdateMainAddress(addressOriginal);
+        updateMainAddress(addressOriginal);
         
         addressRepository.save(addressOriginal);        
 
@@ -85,35 +88,34 @@ public class AddressService {
     public void delete(Long addressId) {
         Address address = findAddress(addressId);
         
-        verifyDeleteMainAddress(address);
+        deleteMainAddress(address);
         addressRepository.delete(address);
 
         log.info("The Address was deleted. Id: "+addressId);
     }
 
-    public void verifyCreateMainAddress(String personCpf) {
-        Person person = personService.findPerson(personCpf);
+    public void verifyDuplicateMainAddress(Person person, boolean isMainAddress) {
         
-        if (person.isHasMainAddress()) throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!");
-        
-        person.setHasMainAddress(true);
+        boolean mainValidation = addressRepository.existsByPersonIdAndMainAddress(person, isMainAddress);
+            if (mainValidation) {
+                throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!");
+            }
     }
 
-    public void verifyDeleteMainAddress(Address address) {
+    public void deleteMainAddress(Address address) {
         Person person = address.getPersonId();
         
         if (address.isMainAddress()) {
-            if (person.isHasMainAddress()) person.setHasMainAddress(false);
+            person.setHasMainAddress(false);
         }
     }
     
-    public void verifyUpdateMainAddress(Address address) {
+    public void updateMainAddress(Address address) {
         Person person = address.getPersonId();
 
-        if (address.isMainAddress() && !person.isHasMainAddress()) {
+        if (address.isMainAddress()) {
             person.setHasMainAddress(true);
-        }
-        if (!address.isMainAddress() && person.isHasMainAddress()) {
+        } else {
             person.setHasMainAddress(false);
         }
     }
