@@ -47,10 +47,10 @@ public class PersonService {
 
     @Transactional
     public PersonResponse create(PersonRequest personDTO) {
-            Person person = personMapper.dtoToPerson(personDTO);
+            Person person = PersonMapper.dtoToPerson(personDTO);
             verifyCPF(person.getCpf());
-            calcAge(person);
             personRepository.save(person);
+            calcAge(person);
             log.info("Successfully created Person. Person: "+person);
 
             PersonResponse responsePerson = personMapper.personToDto(person);

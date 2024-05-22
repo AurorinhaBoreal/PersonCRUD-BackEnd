@@ -51,7 +51,12 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler(DuplicateMainAddressException.class)
-    public ResponseEntity<String> handleErrrorDuplicateMainAddressException(DuplicateMainAddressException e) {
+    public ResponseEntity<String> handleErrorDuplicateMainAddressException(DuplicateMainAddressException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleErrorNullPointerException(NullPointerException e) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Data must be valid!");
     }
 }
