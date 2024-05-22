@@ -1,6 +1,5 @@
 package com.db.crud.person.entity;
 
-import com.db.crud.person.dto.request.AddressRequest;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;

@@ -27,7 +27,7 @@ public class PersonService {
     PersonRepository personRepository;
 
     public Page<Object> findAll(Pageable pageable) {
-        log.info("Registered Persons:");
+        log.info("Searching for Persons in the Database...");
         
         return personRepository.findAll(pageable).map(person -> {
             calcAge(person);

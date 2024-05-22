@@ -77,7 +77,6 @@ public class AddressService {
         
         addressRepository.save(addressOriginal);        
 
-        log.info("The address is the main Address? "+addressOriginal.isMainAddress());
         AddressResponse responseAddress = AddressMapper.INSTANCE.addressToDto(addressOriginal);
         return responseAddress;
     }
