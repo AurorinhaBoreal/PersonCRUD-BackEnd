@@ -10,6 +10,8 @@ import com.db.crud.person.entity.Person;
 @Mapper(componentModel = "spring")
 public interface PersonMapper {
 
+    PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);
+
     PersonResponse personToDto(Person person);
 
     static Person dtoToPerson(PersonRequest personDTO) {
