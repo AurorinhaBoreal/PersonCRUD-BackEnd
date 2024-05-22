@@ -13,7 +13,7 @@ import com.db.crud.person.dto.request.PersonRequest;
 import com.db.crud.person.dto.response.PersonResponse;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.DuplicateCpfException;
-import com.db.crud.person.exception.PersonNotFoundException;
+import com.db.crud.person.exception.ObjectNotFoundException;
 import com.db.crud.person.repository.PersonRepository;
 
 import jakarta.transaction.Transactional;
@@ -86,7 +86,7 @@ public class PersonService {
 
     public Person findPerson(String cpf) {
         Person person = personRepository.findByCpf(cpf).orElseThrow(
-            () -> new PersonNotFoundException("No Person Found with this cpf "+cpf));
+            () -> new ObjectNotFoundException("No Person Found with this cpf "+cpf));
         return person;
     }
 }

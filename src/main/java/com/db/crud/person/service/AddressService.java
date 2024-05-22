@@ -10,7 +10,7 @@ import com.db.crud.person.dto.request.AddressRequest;
 import com.db.crud.person.dto.response.AddressResponse;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
-import com.db.crud.person.exception.AddressNotFoundException;
+import com.db.crud.person.exception.ObjectNotFoundException;
 import com.db.crud.person.exception.DuplicateMainAddressException;
 import com.db.crud.person.repository.AddressRepository;
 import com.db.crud.person.repository.PersonRepository;
@@ -118,7 +118,7 @@ public class AddressService {
 
     public Address findAddress(Long addressId) {
         Address address = addressRepository.findById(addressId).orElseThrow(
-            () -> new AddressNotFoundException("No Address found with ID: " + addressId));;
+            () -> new ObjectNotFoundException("No Address found with ID: " + addressId));;
         return address;
     }
 }

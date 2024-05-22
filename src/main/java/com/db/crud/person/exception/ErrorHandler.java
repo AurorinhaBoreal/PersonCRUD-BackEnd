@@ -17,13 +17,8 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The Endpoint was not found: "+e.getResourcePath());
     }
  
-    @ExceptionHandler(PersonNotFoundException.class)
-    public ResponseEntity<String> handleErrorPersonNotFoundException(PersonNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
-    
-    @ExceptionHandler(AddressNotFoundException.class)
-    public ResponseEntity<String> handleErrorAddressNotFoundException(AddressNotFoundException e) {
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<String> handleErrorObjectNotFoundException(ObjectNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
