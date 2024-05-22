@@ -36,10 +36,7 @@ public class PersonController {
 
     @Autowired
     private PersonService personService;
-
-    @Autowired
-    private PersonMapper personMapper;
-
+    
     @GetMapping
     public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
         return personService.findAll(pageable);
