@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class Address {
 
     @Id
@@ -62,16 +64,4 @@ public class Address {
 
     @Column(nullable = false)
     private boolean mainAddress;
-
-    public Address(AddressRequest address) {
-        this.zipCode = address.zipCode();
-        this.street = address.street();
-        this.number = address.number();
-        this.neighborhood = address.neighborhood();
-        this.city = address.city();
-        this.uf = address.uf();
-        this.country = address.country();
-        this.mainAddress = address.mainAddress();
-    }
-
 }

@@ -12,5 +12,16 @@ public interface AddressMapper {
 
     AddressResponse addressToDto(Address address);
 
-    Address dtoToAddress(AddressRequest address);
+    static Address dtoToAddress(AddressRequest addressDTO) {
+        return Address.builder()
+            .zipCode(addressDTO.zipCode())
+            .street(addressDTO.street())
+            .number(addressDTO.number())
+            .neighborhood(addressDTO.neighborhood())
+            .city(addressDTO.city())
+            .uf(addressDTO.uf())
+            .country(addressDTO.country())
+            .mainAddress(addressDTO.mainAddress())
+            .build();
+    }
 }

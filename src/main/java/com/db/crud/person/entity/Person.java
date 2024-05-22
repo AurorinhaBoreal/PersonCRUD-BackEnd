@@ -20,6 +20,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class Person {
 
     @Id 
@@ -60,13 +62,4 @@ public class Person {
     @OneToMany(mappedBy = "personId", cascade = CascadeType.ALL)
     @Valid
     final List<Address> address = new ArrayList<>();
-
-
-    public Person(PersonRequest person) {
-        this.firstName = person.firstName();
-        this.lastName = person.lastName();
-        this.cpf = person.cpf();
-        this.birthDate = person.birthDate();
-        this.hasMainAddress = false;
-    }
 }

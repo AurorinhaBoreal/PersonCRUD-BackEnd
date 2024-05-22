@@ -12,5 +12,12 @@ public interface PersonMapper {
 
     PersonResponse personToDto(Person person);
 
-    Person dtoToPerson(PersonRequest personDTO);
+    static Person dtoToPerson(PersonRequest personDTO) {
+        return Person.builder()
+            .firstName(personDTO.firstName())
+            .lastName(personDTO.lastName())
+            .cpf(personDTO.cpf())
+            .birthDate(personDTO.birthDate())
+            .build();
+    }
 }
