@@ -42,7 +42,7 @@ public class AddressService {
         assignAddress(address, personCpf);
 
         addressRepository.save(address);
-        AddressResponse responseAddress = AddressMapper.INSTANCE.addressToDto(address);
+        AddressResponse responseAddress = AddressMapper.addressToDto(address);
         return responseAddress;
     }
 
@@ -77,7 +77,7 @@ public class AddressService {
         
         addressRepository.save(addressOriginal);        
 
-        AddressResponse responseAddress = AddressMapper.INSTANCE.addressToDto(addressOriginal);
+        AddressResponse responseAddress = AddressMapper.addressToDto(addressOriginal);
         return responseAddress;
     }
 

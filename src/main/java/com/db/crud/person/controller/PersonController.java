@@ -2,10 +2,8 @@ package com.db.crud.person.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.db.crud.person.dto.mapper.PersonMapper;
 import com.db.crud.person.dto.request.PersonRequest;
 import com.db.crud.person.dto.response.PersonResponse;
-import com.db.crud.person.entity.Person;
 import com.db.crud.person.service.PersonService;
 
 import jakarta.validation.Valid;

@@ -25,13 +25,13 @@ public class PersonService {
 
     @Autowired
     PersonRepository personRepository;
-
+    
     public Page<Object> findAll(Pageable pageable) {
         log.info("Searching for Persons in the Database...");
         
         return personRepository.findAll(pageable).map(person -> {
             calcAge(person);
-            return new PersonResponse(person);
+            return PersonMapper.personToDto(person);
         });
     }
 
@@ -50,7 +50,7 @@ public class PersonService {
             calcAge(person);
             log.info("Successfully created Person. Person: "+person);
 
-            PersonResponse responsePerson = PersonMapper.INSTANCE.personToDto(person);
+            PersonResponse responsePerson = PersonMapper.personToDto(person);
             return responsePerson;
     }
 
@@ -64,7 +64,7 @@ public class PersonService {
         personOriginal.setBirthDate(personUpdate.birthDate());
         personRepository.save(personOriginal);
 
-        PersonResponse responsePerson = PersonMapper.INSTANCE.personToDto(personOriginal);
+        PersonResponse responsePerson = PersonMapper.personToDto(personOriginal);
         return responsePerson;
     }
 
