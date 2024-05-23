@@ -9,7 +9,7 @@ import com.db.crud.person.entity.Person;
 public class PersonFixture {
     
     public static PersonRequest PersonDTOValidFixture() {
-        return new PersonRequest("Aurora", "Rossi", "37491502814", LocalDate.of(2004, 05, 14));
+        return new PersonRequest("Aurora", "Rossi", "05708051043", LocalDate.of(2004, 05, 14));
     }
 
     public static PersonRequest PersonDTOInvalidFixture() {
