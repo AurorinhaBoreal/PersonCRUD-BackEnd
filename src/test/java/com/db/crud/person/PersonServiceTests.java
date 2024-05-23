@@ -1,38 +1,31 @@
 package com.db.crud.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import com.db.crud.person.dto.RequestPersonDTO;
-import com.db.crud.person.dto.ResponsePersonDTO;
+
+import com.db.crud.person.dto.mapper.PersonMapper;
+import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.response.PersonResponse;
 import com.db.crud.person.entity.Person;
-import com.db.crud.person.exception.CreatePersonException;
-import com.db.crud.person.exception.DeletePersonException;
-import com.db.crud.person.exception.GetInfoException;
-import com.db.crud.person.exception.UpdatePersonException;
+import com.db.crud.person.exception.DuplicateCpfException;
+import com.db.crud.person.exception.ObjectNotFoundException;
+import com.db.crud.person.fixtures.PersonFixture;
 import com.db.crud.person.repository.PersonRepository;
 import com.db.crud.person.service.PersonService;
 
@@ -42,25 +35,38 @@ public class PersonServiceTests {
 	@Mock
 	private PersonRepository personRepository;
 
+	@Mock
+	private PersonMapper personMapper;
+
+	
 	@InjectMocks
 	private PersonService personService;
 
-    RequestPersonDTO personDTO;
-	Person person;
+	
+
+	PersonRequest personDTOValid;
+	PersonRequest personDTOInvalid;
+	PersonRequest personDTOInvalidAge;
+	Person personEntityValid;
+	Person personEntityInvalid;
 
 	@BeforeEach
 	public void personSetup() {
-        personDTO = new RequestPersonDTO("Aurora", "Kruschewsky", "37491502814", LocalDate.of(2004, 05, 14));
-		person = new Person(personDTO);
+        personDTOValid = PersonFixture.PersonDTOValidFixture();
+		personDTOInvalid = PersonFixture.PersonDTOInvalidFixture();
+		personDTOInvalidAge = PersonFixture.PersonDTOInvalidAgeFixture();
+
+		personEntityValid = PersonFixture.PersonEntityValidFixture();
+		personEntityInvalid = PersonFixture.PersonEntityInvalidFixture();
 	}
 	
 	@Test
 	@DisplayName("Happy Test: Should find a person in the Database through Id")
 	void findById() {
 
-		when(personRepository.findByCpf(anyString())).thenReturn(Optional.of(person)); 
+		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid)); 
 
-		Person foundPerson = personRepository.findById(1L).get();
+		Person foundPerson = personRepository.findByCpf(personDTOValid.cpf()).get();
 
 		assertNotNull(foundPerson);
 	}
@@ -69,140 +75,101 @@ public class PersonServiceTests {
 	@DisplayName("Happy Test: Should find a person in the Database through CPF")
 	void findByCpf() {
 
-		when(personRepository.findByCpf(person.getCpf())).thenReturn(Optional.of(person)); 
+		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid)); 
 
-		Optional<Person> personFound = personRepository.findByCpf(person.getCpf());
+		Optional<Person> personFound = personRepository.findByCpf(personDTOValid.cpf());
 
 		assertNotNull(personFound);
-		assertEquals(person.getCpf(), personFound.get().getCpf());
+		assertEquals(personDTOValid.cpf(), personFound.get().getCpf());
 	}
 	
-	// @Test
-	// @DisplayName("Happy Test: Should insert a person in the Database")
-	// void createPerson() {
+	@Test
+	@DisplayName("Happy Test: Should insert a person in the Database")
+	void createPerson() {
+		when(personRepository.save(personEntityValid)).thenReturn(personEntityValid);
+        
+        PersonResponse createPerson = personService.create(personDTOValid);
 
-	// 	when(personRepository.save(new Person(personDTO))).thenReturn(person);
-    //     // person.setId(1000L);
-    //     ResponsePersonDTO createPerson = personService.create(person);
-
-    //     assertEquals(createPerson.firstName(), "Aurora");
-    //     assertEquals(createPerson.lastName(), "Kruschewsky");
-    //     assertEquals(createPerson.cpf(), "37491502814");
-    //     assertEquals(createPerson.birthDate().toString(), "2004-05-14");
-	// }
+        assertEquals(createPerson.firstName(), "Aurora");
+        assertEquals(createPerson.lastName(), "Rossi");
+        assertEquals(createPerson.cpf(), "37491502814");
+        assertEquals(createPerson.birthDate().toString(), "2004-05-14");
+	}
 
 	@Test
-	@DisplayName("Sad Test: Should thrown CreatePersonException of create")
-	void thrownCreatePersonException() {
-		CreatePersonException thrown = assertThrows(CreatePersonException.class, () -> {
-			personService.create(null);
+	@DisplayName("Sad Test: Should thrown DuplicateCpfException in create")
+	void thrownDuplicateCpfException() {
+		DuplicateCpfException thrown = assertThrows(DuplicateCpfException.class, () -> {
+			when(personRepository.existsByCpf(anyString())).thenReturn(true);
+
+			personService.create(personDTOValid);
+		});
+	
+		assertEquals("Already exists a person with this cpf!", thrown.getMessage());
+	}
+
+	@Test
+	@DisplayName("Sad Test: Should thrown NullPointerException when date is null in person")
+	void thrownNullPointerException() {
+		NullPointerException thrown = assertThrows(NullPointerException.class, () -> {
+			personService.create(personDTOInvalidAge);
 		});
 
-		assertEquals("Não foi possivel criar a pessoa!", thrown.getMessage());
+		assertEquals(
+			"Cannot invoke \"java.time.LocalDate.until(java.time.chrono.ChronoLocalDate)\" because \"startDateInclusive\" is null", 
+				thrown.getMessage());
 	}
 
 	@Test
 	@DisplayName("Happy Test: Should update a person in the Database")
 	void updatePerson() {
-		when(personRepository.findByCpf(anyString())).thenReturn(Optional.of(person));
+		when(personRepository.findByCpf(personEntityInvalid.getCpf())).thenReturn(Optional.of(personEntityInvalid));
 
-		RequestPersonDTO personUpdated = new RequestPersonDTO("Roberto", "Pereira", "37491502814", LocalDate.of(2004, 05, 14));
-		Person person = new Person(personUpdated);
-		person.setId(1L);
-
-		personService.update(personUpdated, person.getCpf());
+		PersonResponse personUpdated = personService.update(personDTOValid, personEntityInvalid.getCpf());
 
 		assertNotNull(personUpdated);
-		assertEquals("Roberto", personUpdated.firstName());
+		assertEquals("Aurora", personUpdated.firstName());
+		assertEquals("Rossi", personUpdated.lastName());
+		assertEquals(personDTOValid.birthDate(), personUpdated.birthDate());
 	}
 
 	@Test
-	@DisplayName("Sad Test: Should thrown UpdatePersonException of update")
-	void thrownUpdatePersonException() {
-		UpdatePersonException thrown = assertThrows(UpdatePersonException.class, () -> {
-			personService.update(null, null);
+	@DisplayName("Sad Test: Should thrown ObjectNotFoundException of update")
+	void thrownUpdateObjectNotFoundException() {
+		ObjectNotFoundException thrown = assertThrows(ObjectNotFoundException.class, () -> {
+			personService.update(personDTOValid, null);
 		});
 
-		assertEquals("Não foi possivel atualizar os dados de Pessoa", thrown.getMessage());
+		assertEquals("No Person Found with this cpf null", thrown.getMessage());
 	}
 
+	
+	@Test
 	@DisplayName("Happy Test: Should delete a specific person")
-	@Test
 	void deletePessoa() {
-  		when(personRepository.findById(person.getId())).thenReturn(Optional.of(person)); 
+  		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid)); 
 
-  		personService.delete(person.getCpf());
+  		personService.delete(personDTOValid.cpf());
 
-  		verify(personRepository, times(1)).delete(person);
+  		verify(personRepository, times(1)).delete(personEntityValid);
 	}
 
 	@Test
-	@DisplayName("Sad Test: Should thrown DeletePersonException of delete")
-	void thrownDeletePersonException() {
-		DeletePersonException thrown = assertThrows(DeletePersonException.class, () -> {
-			personService.delete(null);
+	@DisplayName("Sad Test: Should thrown ObjectNotFoundException of delete")
+	void thrownDeleteObjectNotFoundException() {
+		ObjectNotFoundException thrown = assertThrows(ObjectNotFoundException.class, () -> {
+			personService.delete(personDTOInvalid.cpf());
 		});
 
-		assertEquals("Não foi possivel deletar a Pessoa!", thrown.getMessage());
+		assertEquals("No Person Found with this cpf null", thrown.getMessage());
 	}
-
-	// TODO: FIX PAGEABLE AND THEM FIX THESE TESTS
-	// @DisplayName("Happy Test: Should list persons by pagination")
-    // @Disabled
-	// @Test
-    // void findAllPageable() {
-
-    //     List<Person> persons = new ArrayList<>();
-
-    //     Page<Person> personsPage = new PageImpl<>(persons);
-
-    //     when(personRepository.findAll(any(Pageable.class))).thenReturn(personsPage);
-
-    //     Page<Object> personsFound = personService.findAll(Pageable.unpaged());
-
-    //     assertTrue(personsFound.isEmpty());
-    // }
-
-	// @Test
-	// @Disabled
-	// @DisplayName("Sad Test: Should thrown GetInfoException of pagination")
-	// void thrownPageableException() {
-	// 	GetInfoException thrown = assertThrows(GetInfoException.class, () -> {
-	// 		personService.findAll(null);
-	// 	});
-
-	// 	assertEquals("Erro ao mostrar páginação!", thrown.getMessage());
-	// }
 
 	@Test
-	@DisplayName("Happy Test: Should list all person")
-	void findAll() {
-		when(personRepository.findAll()).thenReturn(List.of(person));
+	@DisplayName("Happy Test: Should inform person's age")
+	void calcAge() {
+		var age = personService.calcAge(personEntityValid);
 
-		List<Person> listPersons = personService.list();
-
-		assertFalse(listPersons.isEmpty());
+		assertNotNull(age);
+		assertEquals(20, age);
 	}
-
-	// @Test
-	// @DisplayName("Happy Test: Should inform person's age")
-	// void calcAge() {
-	// 	when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
-
-	// 	var info = personService.calcAge(person.getId());
-
-	// 	assertNotNull(info);
-	// 	assertEquals("Aurora", info[0]);
-	// 	assertNotNull(info[1]);
-	// }
-
-	// @Test
-	// @DisplayName("Sad Test: Should thrown GetInfoException of calcAge")
-	// void thrownCalcAgeException() {		
-	// 	GetInfoException thrown = assertThrows(GetInfoException.class, () -> {
-	// 		personService.calcAge(person.getId());
-	// 	});
-
-	// 	assertEquals("Não foi possivel calcular a idade.", thrown.getMessage());
-	// }
 }

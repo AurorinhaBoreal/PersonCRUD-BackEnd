@@ -11,7 +11,7 @@ public class AddressFixture {
     }
 
     public static AddressRequest AddressDTOInvalidFixture() {
-        return new AddressRequest(null, null, null, null, null, null, null, null, false);
+        return new AddressRequest(null, null, null, null, null, null, null, null, true);
     }
 
     public static Address AddressEntityValidFixture() {

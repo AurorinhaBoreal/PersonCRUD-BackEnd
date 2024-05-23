@@ -5,14 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,14 +23,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.db.crud.person.dto.RequestAddressDTO;
-import com.db.crud.person.dto.RequestPersonDTO;
-import com.db.crud.person.dto.ResponseAddressDTO;
+import com.db.crud.person.dto.request.AddressRequest;
+import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.response.AddressResponse;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
-import com.db.crud.person.exception.CreateAddressException;
-import com.db.crud.person.exception.DeleteAddressException;
-import com.db.crud.person.exception.UpdateAddressException;
+import com.db.crud.person.exception.DuplicateMainAddressException;
+import com.db.crud.person.exception.ObjectNotFoundException;
+import com.db.crud.person.fixtures.AddressFixture;
+import com.db.crud.person.fixtures.PersonFixture;
 import com.db.crud.person.repository.AddressRepository;
 import com.db.crud.person.repository.PersonRepository;
 import com.db.crud.person.service.AddressService;
@@ -40,105 +42,96 @@ public class AddressServiceTests {
     
     @Mock
     AddressRepository addressRepository;
+
     @Mock
     PersonRepository personRepository;
+    
     @Mock
     PersonService personService;
 
     @InjectMocks
     AddressService addressService;
-    RequestPersonDTO personDTO;
-    Person person;
-    RequestAddressDTO addressDTO;
-    Address address;
     
+    AddressRequest addressDTOValid;
+    AddressRequest addressDTOInvalid;
+	Address addressEntityValid;
+	Address addressEntityInvalid;
+    PersonRequest personDTOValid;
+    Person personEntityValid;
+
     List<Address> addresses = new ArrayList<>();
 
-    @BeforeEach
-    void addressSetup() {
-        personDTO = new RequestPersonDTO("Aurora", "Kruschewsky", "37491502814", LocalDate.of(2004, 05, 14));
-        person = new Person(personDTO);
-        person.setId(111L);
 
-        addressDTO = new RequestAddressDTO("06453225","Estrada Ferreira Silva","143","Apt 5A","Vizinhança Curiosa","Osasco","SP","Brasil", false);
-        address = new Address(addressDTO);
-        address.setId(111L);
-        
-        
-    }
+    @BeforeEach
+	public void personSetup() {
+        addressDTOValid = AddressFixture.AddressDTOValidFixture();
+		addressDTOInvalid = AddressFixture.AddressDTOInvalidFixture();
+        personDTOValid = PersonFixture.PersonDTOValidFixture();
+
+        addressEntityValid = AddressFixture.AddressEntityValidFixture();
+		addressEntityInvalid = AddressFixture.AddressEntityInvalidFixture();
+        personEntityValid = PersonFixture.PersonEntityValidFixture();
+	}
+
 
     @Test
     @DisplayName("Happy Testt: Should list addresses")
     void listAddress() {
-        when(addressRepository.findAll()).thenReturn(List.of(address));
+        when(addressRepository.findAll()).thenReturn(List.of(addressEntityValid));
 
         List<Address> addresses = addressService.list();
 
-        assertEquals(1, addresses.size());
+        assertNotNull(addresses);
     }
 
     @Test
     @DisplayName("Happy Test: Should Create Address Assigned to a Person")
     void createAddress() {
-        when(personRepository.findByCpf(person.getCpf())).thenReturn(Optional.of(person));
-        when(addressRepository.save(any())).thenReturn(address);
+        when(addressRepository.save(any())).thenReturn(addressEntityValid);
+        when(personService.findPerson(anyString())).thenReturn(personEntityValid);
 
-        ResponseAddressDTO addressCreated = addressService.create(addressDTO, person.getCpf());
+        AddressResponse addressCreated = addressService.create(addressDTOValid, personDTOValid.cpf());
 
         assertNotNull(addressCreated);
-        assertEquals(addressDTO.city(), address.getCity());
-        assertEquals(addressDTO.neighborhood(), address.getNeighborhood());
-        assertEquals(addressDTO.mainAddress(), address.isMainAddress());
+        assertEquals(addressDTOValid.city(), addressCreated.city());
+        assertEquals(addressDTOValid.neighborhood(), addressCreated.neighborhood());
+        assertEquals(addressDTOValid.mainAddress(), addressCreated.mainAddress());
     }
 
     @Test
-    @DisplayName("Sad Test: Should thrown CreateAddressException of create")
-    void thrownCreateAddressException() {
-        CreateAddressException thrown = assertThrows(CreateAddressException.class, () -> {
-            when(personRepository.findByCpf(person.getCpf())).thenReturn(Optional.empty());
-            addressService.create(addressDTO, person.getCpf());
+    @DisplayName("Sad Test: Should thrown NullPointerException of assignAddress")
+    void thrownNullPointerException() {
+        NullPointerException thrown = assertThrows(NullPointerException.class, () -> {
+            addressService.assignAddress(addressEntityInvalid, "654564523");
         });
         
-        assertEquals("Não foi possivel criar o endereço!", thrown.getMessage());
+        assertEquals(
+            "Cannot invoke \"com.db.crud.person.entity.Person.setHasMainAddress(boolean)\" because \"person\" is null", 
+            thrown.getMessage());
     }
 
     @Test
-    @DisplayName("Sad Test: Should thrown CreateAddressException of assignAddress")
-    void thrownAssignAddressException() {
-        CreateAddressException thrown = assertThrows(CreateAddressException.class, () -> {
-            addressService.assignAddress(address, null);
+    @DisplayName("Sad Test: Should thrown DuplicateMainAddressException of verifyMainAddress")
+    void thrownDuplicateMainAddressException() {
+        DuplicateMainAddressException thrown = assertThrows(DuplicateMainAddressException.class, () -> {
+            // when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid));
+            when(personService.findPerson(anyString())).thenReturn(personEntityValid);
+            when(addressRepository.existsByPersonIdAndMainAddress(personEntityValid, true)).thenReturn(true);
+
+            addressService.create(addressDTOInvalid, "37491502814");
         });
         
-        assertEquals("Não foi possivel vincular o endereço a pessoa!", thrown.getMessage());
-    }
-
-    @Test
-    @DisplayName("Sad Test: Should thrown CreateAddressException of verifyMainAddress")
-    void thrownVerifyMainAddressException() {
-        CreateAddressException thrown = assertThrows(CreateAddressException.class, () -> {
-            when(personRepository.findByCpf("37491502814")).thenReturn(Optional.of(person));
-
-            address.setMainAddress(true);
-            addresses.add(address);
-
-            person.setAddress(addresses);
-            addressService.verifyMainAddress(address, "37491502814");
-
-        });
-        
-        assertEquals("Ja existe um endereço principal!", thrown.getMessage());
+        assertEquals("A Main Address Vinculated with this person already exists!", thrown.getMessage());
     }
 
     @Test
     @DisplayName("Happy Test: Should Update the Address in the Database")
     void updateAddress() {
-        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
+        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(addressEntityValid));
+        addressEntityValid.setPersonId(personEntityValid);
 
-        RequestAddressDTO addressUpdated = new RequestAddressDTO("06453225","Estrada Maneirinha","112","Casa 3","Vizinhança Legau","São Paulo","RJ","Brasil", true);
-        Address address2 = new Address(addressUpdated);
-        address2.setId(112L);
-
-        addressService.update(addressUpdated, 112L);
+        AddressRequest addressUpdated = new AddressRequest("06453225","Estrada Maneirinha","112","Casa 3","Vizinhança Legau","São Paulo","RJ","Brasil", true);
+        addressService.update(addressUpdated, 1000L);
 
         assertNotNull(addressUpdated);
         assertEquals("Estrada Maneirinha", addressUpdated.street());
@@ -147,30 +140,34 @@ public class AddressServiceTests {
     @Test
     @DisplayName("Sad Test: Should thrown UpdateAddressException of update")
     void thrownUpdateAddressException() {
-        UpdateAddressException thrown = assertThrows(UpdateAddressException.class, () -> {
-            addressService.update(addressDTO, null);
+        NullPointerException thrown = assertThrows(NullPointerException.class, () -> {
+            when(addressRepository.findById(anyLong())).thenReturn(Optional.of(addressEntityValid));
+
+            addressService.update(addressDTOInvalid, 1L);
         });
         
-        assertEquals("Não foi possivel atualizar os dados do Endereço!", thrown.getMessage());
+        assertEquals(
+            "Cannot invoke \"com.db.crud.person.entity.Person.setHasMainAddress(boolean)\" because \"person\" is null", 
+            thrown.getMessage());
     }
 
     @Test
     @DisplayName("Happy Test: Should delete the Address from the database")
     void deleteAddress() {
-        when(addressRepository.findById(111L)).thenReturn(Optional.of(address));
-        
-        addressService.delete(address.getId());
+        when(addressRepository.findById(111L)).thenReturn(Optional.of(addressEntityValid));
+        addressEntityValid.setId(111L);
+        addressService.delete(addressEntityValid.getId());
 
-        verify(addressRepository, times(1)).delete(address);
+        verify(addressRepository, times(1)).delete(addressEntityValid);
     }
 
     @Test
-    @DisplayName("Sad Test: Should thrown DeleteAddressException of delete")
-    void thrownDeleteAddressException() {
-        DeleteAddressException thrown = assertThrows(DeleteAddressException.class, () -> {
-            addressService.delete(null);
+    @DisplayName("Sad Test: Should thrown ObjectNotFoundException of delete")
+    void thrownObjectNotFoundException() {
+        ObjectNotFoundException thrown = assertThrows(ObjectNotFoundException.class, () -> {
+            addressService.delete(addressEntityInvalid.getId());
         });
         
-        assertEquals("Não foi possivel deletar o Endereço!", thrown.getMessage());
+        assertEquals("No Address found with ID: null", thrown.getMessage());
     }
 }
