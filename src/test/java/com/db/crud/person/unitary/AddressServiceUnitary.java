@@ -1,4 +1,4 @@
-package com.db.crud.person;
+package com.db.crud.person.unitary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +36,7 @@ import com.db.crud.person.service.AddressService;
 import com.db.crud.person.service.PersonService;
 
 @ExtendWith(MockitoExtension.class)
-public class AddressServiceTests {
+public class AddressServiceUnitary {
     
     @Mock
     AddressRepository addressRepository;
@@ -52,26 +50,15 @@ public class AddressServiceTests {
     @InjectMocks
     AddressService addressService;
     
-    AddressRequest addressDTOValid;
-    AddressRequest addressDTOInvalid;
-	Address addressEntityValid;
-	Address addressEntityInvalid;
-    PersonRequest personDTOValid;
-    Person personEntityValid;
+    AddressRequest addressDTOValid = AddressFixture.AddressDTOValidFixture();
+    AddressRequest addressDTOInvalid = AddressFixture.AddressDTOInvalidFixture();
+	Address addressEntityValid = AddressFixture.AddressEntityValidFixture();
+	Address addressEntityInvalid = AddressFixture.AddressEntityInvalidFixture();
+
+    PersonRequest personDTOValid = PersonFixture.PersonDTOValidFixture();
+    Person personEntityValid = PersonFixture.PersonEntityValidFixture();
 
     List<Address> addresses = new ArrayList<>();
-
-
-    @BeforeEach
-	public void personSetup() {
-        addressDTOValid = AddressFixture.AddressDTOValidFixture();
-		addressDTOInvalid = AddressFixture.AddressDTOInvalidFixture();
-        personDTOValid = PersonFixture.PersonDTOValidFixture();
-
-        addressEntityValid = AddressFixture.AddressEntityValidFixture();
-		addressEntityInvalid = AddressFixture.AddressEntityInvalidFixture();
-        personEntityValid = PersonFixture.PersonEntityValidFixture();
-	}
 
 
     @Test
@@ -114,7 +101,6 @@ public class AddressServiceTests {
     @DisplayName("Sad Test: Should thrown DuplicateMainAddressException of verifyMainAddress")
     void thrownDuplicateMainAddressException() {
         DuplicateMainAddressException thrown = assertThrows(DuplicateMainAddressException.class, () -> {
-            // when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid));
             when(personService.findPerson(anyString())).thenReturn(personEntityValid);
             when(addressRepository.existsByPersonIdAndMainAddress(personEntityValid, true)).thenReturn(true);
 

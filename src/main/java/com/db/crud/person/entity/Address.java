@@ -1,6 +1,5 @@
 package com.db.crud.person.entity;
 
-import com.db.crud.person.dto.AddressDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
@@ -14,25 +13,30 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Entity
 @Table(name = "tbl_address")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Data
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@Getter
+@Setter
+@Builder
 public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
-    private Long ID;
+    private Long Id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
     @JsonBackReference
-    private Person personID;
+    private Person personId;
 
     @Column(name = "zip_code", length = 12, nullable = false)
     private String zipCode;
@@ -57,16 +61,4 @@ public class Address {
 
     @Column(nullable = false)
     private boolean mainAddress;
-
-    public Address(AddressDTO address) {
-        this.zipCode = address.getZipCode();
-        this.street = address.getStreet();
-        this.number = address.getNumber();
-        this.neighborhood = address.getNeighborhood();
-        this.city = address.getCity();
-        this.uf = address.getUf();
-        this.country = address.getCountry();
-        this.mainAddress = address.isMainAddress();
-    }
-
 }

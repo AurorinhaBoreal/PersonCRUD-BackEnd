@@ -29,8 +29,8 @@
 ## Minimum Viable Product
 - ✅ Container Docker
 - ✅ Conectar Banco
-- ✅ Entidade Pessoa (ID, Nome, Data Nasc, CPF)
-- ✅ Entidade Endereço (ID, personID, Street, Number, Neighborhood, City, UF, Country)
+- ✅ Entidade Pessoa (Id, Nome, Data Nasc, CPF)
+- ✅ Entidade Endereço (Id, personId, Street, Number, Neighborhood, City, UF, Country)
 - ✅ Relacionar Pessoa e Endereço (1:n)
 - ✅ Listar Pessoas e Endereços
 - ✅ Atualizar Pessoa e Endereços
@@ -98,12 +98,12 @@ US's - EXTRA
 - CONTROLLERS:
   -> /person/list                # Lista as pessoas e seus respectivos endereços adicionados ao banco
   -> /person/pageable            # Lista as pessoas por meio de paginação
-  -> /person/update/{personID}   # Atualiza a pessoa especificada no banco
-  -> /person/delete/{personID}   # Apaga a pessoa e seus respectivos endereços no banco
-  -> /person/getage/{personID}   # Informa a idade da pessoa especificada
+  -> /person/update/{personId}   # Atualiza a pessoa especificada no banco
+  -> /person/delete/{personId}   # Apaga a pessoa e seus respectivos endereços no banco
+  -> /person/getage/{personId}   # Informa a idade da pessoa especificada
 
 
   -> /address/list                 # Lista os endereços já adicionados ao banco
-  -> /adress/create/{personID}     # Adiciona o endereço ao banco^e o vincula a um usuário
-  -> /adress/update/{addressID}    # Atualiza o endereço espeicificado no banco
-  -> /adress/delete/{addressID}    # Deleta o endereço especificado do banco
+  -> /adress/create/{personId}     # Adiciona o endereço ao banco^e o vincula a um usuário
+  -> /adress/update/{addressId}    # Atualiza o endereço espeicificado no banco
+  -> /adress/delete/{addressId}    # Deleta o endereço especificado do banco

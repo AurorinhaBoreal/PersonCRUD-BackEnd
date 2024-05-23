@@ -5,15 +5,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.db.crud.person.dto.AddressDTO;
+import com.db.crud.person.dto.mapper.AddressMapper;
+import com.db.crud.person.dto.request.AddressRequest;
+import com.db.crud.person.dto.response.AddressResponse;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
-import com.db.crud.person.exception.CreateAddressException;
-import com.db.crud.person.exception.DeleteAddressException;
-import com.db.crud.person.exception.UpdateAddressException;
+import com.db.crud.person.exception.ObjectNotFoundException;
+import com.db.crud.person.exception.DuplicateMainAddressException;
 import com.db.crud.person.repository.AddressRepository;
 import com.db.crud.person.repository.PersonRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -21,81 +23,102 @@ import lombok.extern.slf4j.Slf4j;
 public class AddressService {
     
     @Autowired
-    AddressRepository repositoryA;
+    AddressRepository addressRepository;
 
     @Autowired
-    PersonRepository repositoryP;
+    PersonRepository personRepository;
+
+    @Autowired
+    PersonService personService;
 
     public List<Address> list() {
-        return repositoryA.findAll();
+        return addressRepository.findAll();
+    }
+
+    @Transactional
+    public AddressResponse create(AddressRequest addressDTO, String personCpf) {
+
+        Address address = AddressMapper.dtoToAddress(addressDTO);
+        assignAddress(address, personCpf);
+
+        addressRepository.save(address);
+        AddressResponse responseAddress = AddressMapper.addressToDto(address);
+        return responseAddress;
+    }
+
+    public Address assignAddress(Address address, String personCpf) {
+        Person person = personService.findPerson(personCpf);
+        
+        if (address.isMainAddress()) {
+            verifyDuplicateMainAddress(person, address.isMainAddress());
+        }
+        
+        person.setHasMainAddress(true);
+        address.setPersonId(person);
+        return address;
     }
 
     
-    public Address create(AddressDTO addressDTO, Long personID) {
-        try {
-            Address address = new Address(addressDTO);
-            assignAddress(address, personID);
 
-            if (address.isMainAddress() == true) verifyMainAddress(address, personID);
+    @Transactional
+    public AddressResponse update(AddressRequest addressUpdate, Long addressId) {
+        Address addressOriginal = findAddress(addressId);
 
-            repositoryA.save(address);
-            
-            return address;
-        } catch (Exception e) {
-            throw new CreateAddressException("Não foi possivel criar o endereço!");
+        addressOriginal.setZipCode(addressUpdate.zipCode());
+        addressOriginal.setStreet(addressUpdate.street());
+        addressOriginal.setNumber(addressUpdate.number());
+        addressOriginal.setNeighborhood(addressUpdate.neighborhood());
+        addressOriginal.setCity(addressUpdate.city());
+        addressOriginal.setUf(addressUpdate.uf());
+        addressOriginal.setCountry(addressUpdate.country());
+        addressOriginal.setMainAddress(addressUpdate.mainAddress());
+        
+        updateMainAddress(addressOriginal);
+        
+        addressRepository.save(addressOriginal);        
+
+        AddressResponse responseAddress = AddressMapper.addressToDto(addressOriginal);
+        return responseAddress;
+    }
+
+    public void delete(Long addressId) {
+        Address address = findAddress(addressId);
+        
+        deleteMainAddress(address);
+        addressRepository.delete(address);
+
+        log.info("The Address was deleted. Id: "+addressId);
+    }
+
+    public void verifyDuplicateMainAddress(Person person, boolean isMainAddress) {
+        
+        boolean mainValidation = addressRepository.existsByPersonIdAndMainAddress(person, isMainAddress);
+            if (mainValidation) {
+                throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!");
+            }
+    }
+
+    public void deleteMainAddress(Address address) {
+        Person person = address.getPersonId();
+        
+        if (address.isMainAddress()) {
+            person.setHasMainAddress(false);
+        }
+    }
+    
+    public void updateMainAddress(Address address) {
+        Person person = address.getPersonId();
+
+        if (address.isMainAddress()) {
+            person.setHasMainAddress(true);
+        } else {
+            person.setHasMainAddress(false);
         }
     }
 
-    public void assignAddress(Address address, Long personID) {
-        try {
-            Person person = repositoryP.findById(personID).get();
-            address.setPersonID(person);
-        } catch (Exception e) {
-            throw new CreateAddressException("Não foi possivel vincular o endereço a pessoa!");
-        }
-    }
-
-    public void verifyMainAddress(Address address, Long personID) {
-        Person person = repositoryP.findById(personID).get();
-
-        List<Address> addresses = person.getAddress();
-
-        addresses.forEach((element) -> {
-            if (element.isMainAddress() == true) throw new CreateAddressException("Ja existe um endereço principal!");
-        });
-    }
-
-    public Address update(AddressDTO addressUpdate, Long addressID) {
-        try {
-            Address addressOriginal = repositoryA.findById(addressID).get();
-
-            addressOriginal.setZipCode(addressUpdate.getZipCode());
-            addressOriginal.setStreet(addressUpdate.getStreet());
-            addressOriginal.setNumber(addressUpdate.getNumber());
-            addressOriginal.setNeighborhood(addressUpdate.getNeighborhood());
-            addressOriginal.setCity(addressUpdate.getCity());
-            addressOriginal.setUf(addressUpdate.getUf());
-            addressOriginal.setCountry(addressUpdate.getCountry());
-            addressOriginal.setMainAddress(addressUpdate.isMainAddress());
-            repositoryA.save(addressOriginal);
-
-            log.info("O endereço atual é o principal? "+addressOriginal.isMainAddress());
-
-            return addressOriginal;
-        } catch (Exception e) {
-            throw new UpdateAddressException("Não foi possivel atualizar os dados do Endereço!");
-        }
-    }
-
-    public void delete(Long addressID) {
-        try {
-            Address address = repositoryA.findById(addressID).get();
-            
-            repositoryA.delete(address);
-
-            log.info("O endereço foi deletado. ID: "+addressID);
-        } catch (Exception e) {
-            throw new DeleteAddressException("Não foi possivel deletar o Endereço!");
-        }
+    public Address findAddress(Long addressId) {
+        Address address = addressRepository.findById(addressId).orElseThrow(
+            () -> new ObjectNotFoundException("No Address found with ID: " + addressId));;
+        return address;
     }
 }

@@ -1,8 +1,9 @@
-package com.db.crud.person;
+package com.db.crud.person.unitary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +30,7 @@ import com.db.crud.person.repository.PersonRepository;
 import com.db.crud.person.service.PersonService;
 
 @ExtendWith(MockitoExtension.class)
-public class PersonServiceTests {
+public class PersonServiceUnitary {
 
 	@Mock
 	private PersonRepository personRepository;
@@ -44,21 +44,11 @@ public class PersonServiceTests {
 
 	
 
-	PersonRequest personDTOValid;
-	PersonRequest personDTOInvalid;
-	PersonRequest personDTOInvalidAge;
-	Person personEntityValid;
-	Person personEntityInvalid;
-
-	@BeforeEach
-	public void personSetup() {
-        personDTOValid = PersonFixture.PersonDTOValidFixture();
-		personDTOInvalid = PersonFixture.PersonDTOInvalidFixture();
-		personDTOInvalidAge = PersonFixture.PersonDTOInvalidAgeFixture();
-
-		personEntityValid = PersonFixture.PersonEntityValidFixture();
-		personEntityInvalid = PersonFixture.PersonEntityInvalidFixture();
-	}
+	PersonRequest personDTOValid = PersonFixture.PersonDTOValidFixture();
+	PersonRequest personDTOInvalid = PersonFixture.PersonDTOInvalidFixture();
+	PersonRequest personDTOInvalidAge = PersonFixture.PersonDTOInvalidAgeFixture();
+	Person personEntityValid = PersonFixture.PersonEntityValidFixture();
+	Person personEntityInvalid = PersonFixture.PersonEntityInvalidFixture();
 	
 	@Test
 	@DisplayName("Happy Test: Should find a person in the Database through Id")
@@ -86,13 +76,13 @@ public class PersonServiceTests {
 	@Test
 	@DisplayName("Happy Test: Should insert a person in the Database")
 	void createPerson() {
-		when(personRepository.save(personEntityValid)).thenReturn(personEntityValid);
+		when(personRepository.save(any())).thenReturn(personEntityValid);
         
         PersonResponse createPerson = personService.create(personDTOValid);
 
         assertEquals(createPerson.firstName(), "Aurora");
         assertEquals(createPerson.lastName(), "Rossi");
-        assertEquals(createPerson.cpf(), "37491502814");
+        assertEquals(createPerson.cpf(), "05708051043");
         assertEquals(createPerson.birthDate().toString(), "2004-05-14");
 	}
 

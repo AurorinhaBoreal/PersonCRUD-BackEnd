@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.db.crud.person.dto.PersonDTO;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,25 +12,31 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
+@Entity 
 @Table(name = "tbl_person")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) 
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-@Data
+@Getter
+@Setter
+@Builder
 public class Person {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Id 
+    @GeneratedValue(strategy=GenerationType.IDENTITY) // Define o tipo de geração do Id
     @Column(name = "person_id")
-    private Long ID;
+    private Long Id;
 
-    @Column(length=20, nullable = false)
+    @Column(length=20, nullable = false) // Define o limite de caracteres como 20 e não permite ser null
     private String firstName;
 
     @Column(length=20, nullable = false)
@@ -45,14 +49,13 @@ public class Person {
     @NotNull(message = "Informe uma data válida!")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "personID", cascade = CascadeType.ALL)
-    private List<Address> address = new ArrayList<>();
+    @Column
+    private boolean hasMainAddress;
 
-
-    public Person(PersonDTO person) {
-        this.firstName = person.getFirstName();
-        this.lastName = person.getLastName();
-        this.cpf = person.getCpf();
-        this.birthDate = person.getBirthDate();
-    }
+    @Transient
+    private Integer age;
+    
+    @OneToMany(mappedBy = "personId", cascade = CascadeType.ALL)
+    @Valid
+    final List<Address> address = new ArrayList<>();
 }

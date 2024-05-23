@@ -2,8 +2,8 @@ package com.db.crud.person.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.db.crud.person.dto.PersonDTO;
-import com.db.crud.person.entity.Person;
+import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.response.PersonResponse;
 import com.db.crud.person.service.PersonService;
 
 import jakarta.validation.Valid;
@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
-
-
 
 
 @RestController
@@ -38,40 +35,28 @@ public class PersonController {
     @Autowired
     private PersonService personService;
     
-    @GetMapping("/list")
-    public List<Person> listPersons() {
-        return personService.list();
-    }
-
-    @GetMapping("/pageable")
+    @GetMapping
     public Page<Object> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
         return personService.findAll(pageable);
     }
-    
 
     @PostMapping("/create")
-    public ResponseEntity<Person> createUser(@RequestBody @Valid PersonDTO person) {
-        var info = personService.create(new Person(person));
-        return ResponseEntity.status(HttpStatus.CREATED).body(info);
+    public ResponseEntity<PersonResponse> createUser(@RequestBody @Valid PersonRequest personDTO) {
+        var body = personService.create(personDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
-    @PatchMapping("/update/{personID}")
-    public ResponseEntity<Person> updateUser(@RequestBody @Valid PersonDTO person, @PathVariable Long personID) {
-        log.info("Atualizando Pessoa: "+person);
-        var info = personService.update(person, personID);
-        return ResponseEntity.status(HttpStatus.OK).body(info);
+    @PatchMapping("/update/{personCpf}")
+    public ResponseEntity<PersonResponse> updateUser(@RequestBody @Valid PersonRequest person, @PathVariable String personCpf) {
+        log.info("Updating Person: "+person);
+        var body = personService.update(person, personCpf);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @DeleteMapping("/delete/{personID}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long personID) {
-        personService.delete(personID);
+    @DeleteMapping("/delete/{personCpf}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String personCpf) {
+        personService.delete(personCpf);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/age/{personID}")
-    public ResponseEntity<String> getAge(@PathVariable Long personID) {
-        var info = personService.calcAge(personID);
-        return ResponseEntity.status(HttpStatus.OK).body(info);
     }
     
 }
