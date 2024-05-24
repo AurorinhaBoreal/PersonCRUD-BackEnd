@@ -17,8 +17,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -36,7 +35,7 @@ public class Person {
     @Column(name = "person_id")
     private Long Id;
 
-    @Column(length=20, nullable = false) // Define o limite de caracteres como 20 e não permite ser null
+    @Column(length=20, nullable = false)
     private String firstName;
 
     @Column(length=20, nullable = false)
