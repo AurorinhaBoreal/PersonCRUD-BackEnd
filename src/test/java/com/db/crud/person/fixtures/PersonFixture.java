@@ -22,7 +22,7 @@ public class PersonFixture {
 
     public static Person PersonEntityValidFixture() {
         Person person = PersonMapper.dtoToPerson(PersonDTOValidFixture());
-
+        
         return person;
     }
 
