@@ -41,7 +41,7 @@
  
 -> EXTRAS:
 - ✅ Tratamento de Exceções
-- 🚧 Testes de Integração
+- ✅ Testes de Integração
 - ✅ Swagger
 - ✅ Informar endereço principal da Pessoa
 - ✅ Paginação da Lista de Pessoas
@@ -60,7 +60,7 @@ US's - MVP
   - ✅ [US005-1] Excluir os dados da minha pessoa e por consequência os de Endereço
   - ✅ [US005-1] Excluir os dados de meus endereços
 - ✅ [US006] Como usuário, quero poder visualizar a minha idade no sistema
-- 🚧 [US007] Criar Mappers para conversão DTO - Entidade
+- ✅ [US007] Criar Mappers para conversão DTO - Entidade
 - ✅ [US008] Criar Método para paginação dos dados a serem apresentados
 
 US's - EXTRA
@@ -96,14 +96,21 @@ US's - EXTRA
     country - varchar(15)
  
 - CONTROLLERS:
-  -> /person/list                # Lista as pessoas e seus respectivos endereços adicionados ao banco
-  -> /person/pageable            # Lista as pessoas por meio de paginação
-  -> /person/update/{personId}   # Atualiza a pessoa especificada no banco
-  -> /person/delete/{personId}   # Apaga a pessoa e seus respectivos endereços no banco
-  -> /person/getage/{personId}   # Informa a idade da pessoa especificada
 
 
-  -> /address/list                 # Lista os endereços já adicionados ao banco
-  -> /adress/create/{personId}     # Adiciona o endereço ao banco^e o vincula a um usuário
-  -> /adress/update/{addressId}    # Atualiza o endereço espeicificado no banco
-  -> /adress/delete/{addressId}    # Deleta o endereço especificado do banco
+  -> 🧑 /person                      # Lista as pessoas por meio de paginação
+
+  -> 🧑 /person/create               # Permite inserir pessoas no banco
+
+  -> 🧑 /person/update/{personCpf}   # Atualiza a pessoa especificada no banco
+
+  -> 🧑 /person/delete/{personCpf}   # Apaga a pessoa e seus respectivos endereços no banco
+
+
+  -> 🏘️ /address/list                 # Lista os endereços já adicionados ao banco
+
+  -> 🏘️ /adress/create/{personCpf}     # Adiciona o endereço ao banco^e o vincula a um usuário
+
+  -> 🏘️ /adress/update/{addressId}    # Atualiza o endereço espeicificado no banco
+
+  -> 🏘️ /adress/delete/{addressId}    # Deleta o endereço especificado do banco
