@@ -18,6 +18,7 @@ public interface PersonMapper {
             .cpf(person.getCpf())
             .hasMainAddress(person.isHasMainAddress())
             .addresses(person.getAddress())
+            .photoId(person.getPhotoId())
             .build();
     }
 
@@ -27,6 +28,7 @@ public interface PersonMapper {
             .lastName(personDTO.lastName())
             .cpf(personDTO.cpf())
             .birthDate(personDTO.birthDate())
+            .photoId(personDTO.photoId())
             .build();
     }
 }
