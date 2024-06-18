@@ -62,6 +62,7 @@ public class PersonService {
         personOriginal.setLastName(personUpdate.lastName());
         personOriginal.setCpf(personUpdate.cpf());
         personOriginal.setBirthDate(personUpdate.birthDate());
+        personOriginal.setPhotoId(personUpdate.photoId());
         personRepository.save(personOriginal);
 
         PersonResponse responsePerson = PersonMapper.personToDto(personOriginal);
