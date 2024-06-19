@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.db.crud.person.PersonApplication;
 import com.db.crud.person.dto.request.PersonRequest;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.fixtures.PersonFixture;
@@ -22,7 +24,8 @@ import com.db.crud.person.repository.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(classes = {PersonApplication.class})
+@ActiveProfiles("test")
 public class PersonControllerIntegration {
     
     @Autowired
@@ -43,13 +46,13 @@ public class PersonControllerIntegration {
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.insertPerson),
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = SqlProvider.clearDB)
     })
-    void testGetPageable() throws Exception {
+    void testGet() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/person"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content[1].firstName").value("João"))
-        .andExpect(jsonPath("$.content[1].lastName").value("Silva"))
-        .andExpect(jsonPath("$.content[1].cpf").value("30143518062"));
+        .andExpect(jsonPath("[0].firstName").value("Carlos"))
+        .andExpect(jsonPath("[0].lastName").value("Souza"))
+        .andExpect(jsonPath("[0].cpf").value("85626848053"));
     }
 
     @Test

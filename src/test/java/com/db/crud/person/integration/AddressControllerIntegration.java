@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.db.crud.person.PersonApplication;
 import com.db.crud.person.dto.request.AddressRequest;
 import com.db.crud.person.fixtures.AddressFixture;
 import com.db.crud.person.fixtures.SqlProvider;
@@ -21,7 +23,8 @@ import com.db.crud.person.repository.AddressRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(classes = {PersonApplication.class})
+@ActiveProfiles("test")
 public class AddressControllerIntegration {
  
     @Autowired

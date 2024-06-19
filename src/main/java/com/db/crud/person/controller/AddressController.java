@@ -39,7 +39,7 @@ public class AddressController {
     }
 
     @PostMapping("/create/{personCpf}")
-    public ResponseEntity<AddressResponse> createAddress(@RequestBody @Valid AddressRequest address, @PathVariable String personCpf) {
+    public ResponseEntity<AddressResponse> createAddress(@RequestBody @Valid AddressRequest address, @PathVariable("personCpf") String personCpf) {
 
         var body = addressService.create(address, personCpf);
 
@@ -50,7 +50,7 @@ public class AddressController {
     }
 
     @PatchMapping("/update/{addressId}")
-    public ResponseEntity<AddressResponse> updateAddress(@RequestBody @Valid AddressRequest address, @PathVariable Long addressId) {
+    public ResponseEntity<AddressResponse> updateAddress(@RequestBody @Valid AddressRequest address, @PathVariable("addressId") Long addressId) {
 
         var body = addressService.update(address, addressId);
         
@@ -58,7 +58,7 @@ public class AddressController {
     }
     
     @DeleteMapping("/delete/{addressId}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable Long addressId) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable("addressId") Long addressId) {
         
         addressService.delete(addressId);
 
