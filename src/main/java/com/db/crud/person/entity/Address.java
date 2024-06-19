@@ -47,6 +47,9 @@ public class Address {
     @Column(length = 5, nullable = false)
     private String number;
 
+    @Column(length = 30)
+    private String complement;
+    
     @Column(length = 20, nullable = false)
     private String neighborhood;
 
