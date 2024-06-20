@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Size;
 
 
 public record AddressRequest(
+    @NotNull(message = "Must inform a Identifier")
+    Long addressIdentifier,
+
     @NotBlank(message = "A ZIP Code must be informed!")
     @Size(min = 7, max = 12, message = "ZIP Code must be valid!")
     String zipCode,
