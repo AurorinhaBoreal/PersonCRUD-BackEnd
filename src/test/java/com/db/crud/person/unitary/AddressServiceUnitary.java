@@ -116,7 +116,7 @@ public class AddressServiceUnitary {
         when(addressRepository.findById(anyLong())).thenReturn(Optional.of(addressEntityValid));
         addressEntityValid.setPersonId(personEntityValid);
 
-        AddressRequest addressUpdated = new AddressRequest("06453225","Estrada Maneirinha","112","Casa 3","Vizinhança Legau","São Paulo","RJ","Brasil", true);
+        AddressRequest addressUpdated = new AddressRequest(12L, "06453225","Estrada Maneirinha","112","Casa 3","Vizinhança Legau","São Paulo","RJ","Brasil", true);
         addressService.update(addressUpdated, 1000L);
 
         assertNotNull(addressUpdated);
