@@ -33,6 +33,9 @@ public class Address {
     @Column(name = "address_id")
     private Long Id;
 
+    @Column(name = "identifier_id", columnDefinition = "BIGINT")
+    private Long addressIdentifier;
+    
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
     @JsonBackReference

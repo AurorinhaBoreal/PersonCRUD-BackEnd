@@ -11,6 +11,7 @@ public interface AddressMapper {
 
     static AddressResponse addressToDto(Address address) {
         return AddressResponse.builder()
+            .addressIdentifier(address.getAddressIdentifier())
             .zipCode(address.getZipCode())
             .street(address.getStreet())
             .number(address.getNumber())
@@ -25,6 +26,7 @@ public interface AddressMapper {
 
     static Address dtoToAddress(AddressRequest addressDTO) {
         return Address.builder()
+            .addressIdentifier(addressDTO.addressIdentifier())
             .zipCode(addressDTO.zipCode())
             .street(addressDTO.street())
             .number(addressDTO.number())

@@ -117,8 +117,12 @@ public class AddressService {
     }
 
     public Address findAddress(Long addressId) {
-        Address address = addressRepository.findById(addressId).orElseThrow(
-            () -> new ObjectNotFoundException("No Address found with ID: " + addressId));;
-        return address;
+        Address address = null;
+        try {
+            address = addressRepository.findByAddressIdentifier(addressId);
+        } catch (Exception e) {
+            new ObjectNotFoundException("No Address found with ID: " + addressId);   
+        }
+        return address;   
     }
 }
