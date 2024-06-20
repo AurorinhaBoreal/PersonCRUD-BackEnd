@@ -13,5 +13,6 @@ import com.db.crud.person.entity.Person;
 public interface AddressRepository extends JpaRepository<Address, Long> {
  
     boolean existsByPersonIdAndMainAddress(Person personId, boolean mainAddress);
+    boolean existsByAddressIdentifier(Long addressIdentifier);
     Address findByAddressIdentifier(Long addressIdentifier);
 }
