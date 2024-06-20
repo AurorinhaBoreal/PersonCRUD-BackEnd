@@ -50,6 +50,11 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
+    @ExceptionHandler(DuplicateAddressIdException.class)
+    public ResponseEntity<String> handleErrorDuplicateAddressIdException(DuplicateAddressIdException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<String> handleErrorNullPointerException(NullPointerException e) {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Data must be valid!");
