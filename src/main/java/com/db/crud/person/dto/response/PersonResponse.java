@@ -15,5 +15,6 @@ public record PersonResponse(
     Integer age,
     String cpf,
     boolean hasMainAddress,
+    Integer photoId,
     List<Address> addresses
 ) {}

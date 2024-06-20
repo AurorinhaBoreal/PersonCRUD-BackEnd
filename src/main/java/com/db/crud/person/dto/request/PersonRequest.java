@@ -21,4 +21,7 @@ public record PersonRequest(
     String cpf,
 
     @NotNull(message = "Data must be valid!")
-    LocalDate birthDate) {}
+    LocalDate birthDate,
+    
+    @NotNull(message = "Must inform a photoId")
+    Integer photoId) {}

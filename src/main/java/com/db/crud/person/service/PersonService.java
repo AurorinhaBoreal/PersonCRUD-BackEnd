@@ -2,11 +2,11 @@ package com.db.crud.person.service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 
 import com.db.crud.person.dto.mapper.PersonMapper;
 import com.db.crud.person.dto.request.PersonRequest;
@@ -26,13 +26,13 @@ public class PersonService {
     @Autowired
     PersonRepository personRepository;
     
-    public Page<Object> findAll(Pageable pageable) {
+    public List<PersonResponse> findAll(Pageable pageable) {
         log.info("Searching for Persons in the Database...");
         
         return personRepository.findAll(pageable).map(person -> {
             calcAge(person);
             return PersonMapper.personToDto(person);
-        });
+        }).toList();
     }
 
     private boolean verifyCPF(String cpf) {
@@ -62,6 +62,7 @@ public class PersonService {
         personOriginal.setLastName(personUpdate.lastName());
         personOriginal.setCpf(personUpdate.cpf());
         personOriginal.setBirthDate(personUpdate.birthDate());
+        personOriginal.setPhotoId(personUpdate.photoId());
         personRepository.save(personOriginal);
 
         PersonResponse responsePerson = PersonMapper.personToDto(personOriginal);

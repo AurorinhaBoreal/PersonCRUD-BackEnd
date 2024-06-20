@@ -54,6 +54,9 @@ public class Person {
 
     @Transient
     private Integer age;
+
+    @Column
+    private Integer photoId;
     
     @OneToMany(mappedBy = "personId", cascade = CascadeType.ALL)
     @Valid
