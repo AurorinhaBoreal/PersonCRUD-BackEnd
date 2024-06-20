@@ -11,6 +11,7 @@ import com.db.crud.person.dto.response.AddressResponse;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.ObjectNotFoundException;
+import com.db.crud.person.exception.DuplicateAddressIdException;
 import com.db.crud.person.exception.DuplicateMainAddressException;
 import com.db.crud.person.repository.AddressRepository;
 import com.db.crud.person.repository.PersonRepository;
@@ -39,11 +40,19 @@ public class AddressService {
     public AddressResponse create(AddressRequest addressDTO, String personCpf) {
 
         Address address = AddressMapper.dtoToAddress(addressDTO);
+        verifyAddressID(address.getAddressIdentifier());
         assignAddress(address, personCpf);
 
         addressRepository.save(address);
         AddressResponse responseAddress = AddressMapper.addressToDto(address);
         return responseAddress;
+    }
+
+    private boolean verifyAddressID(Long addressIdentifier) {
+        if (addressRepository.existsByAddressIdentifier(addressIdentifier)) {
+            throw new DuplicateAddressIdException("This ID is already in use! Choose Another!");    
+        }
+        return true;
     }
 
     public Address assignAddress(Address address, String personCpf) {
