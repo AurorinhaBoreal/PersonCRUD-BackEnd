@@ -16,7 +16,6 @@ public class AddressFixture {
 
     public static Address AddressEntityValidFixture() {
         Address address = AddressMapper.dtoToAddress(AddressDTOValidFixture());
-        address.setId(1000L);
 
         return address;
     }
