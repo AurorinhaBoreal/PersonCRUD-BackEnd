@@ -57,6 +57,9 @@ public class PersonControllerIntegration {
 
     @Test
     @DisplayName("Happy Test: Should Create Person")
+    @SqlGroup({
+        @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = SqlProvider.clearDB)
+    })
     void testCreatePerson() throws Exception {
         
         personDTORequest = PersonFixture.PersonDTOValidFixture();

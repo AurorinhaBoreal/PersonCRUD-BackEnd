@@ -42,6 +42,7 @@ public class AddressControllerIntegration {
     @Test
     @DisplayName("Happy Test: Should Create Address")
     @SqlGroup({
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.clearDB),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.insertPerson),
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = SqlProvider.clearDB)
     })
@@ -63,6 +64,7 @@ public class AddressControllerIntegration {
     @Test
     @DisplayName("Happy Test: Should update Address")
     @SqlGroup({
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.clearDB),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.insertPerson),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.insertAddress),
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = SqlProvider.clearDB)
@@ -73,7 +75,7 @@ public class AddressControllerIntegration {
 
         json = mapper.writeValueAsString(addressDTORequest);
 
-        Long id = 1L;
+        Long id = 14L;
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/address/update/" + id)
             .contentType(MediaType.APPLICATION_JSON)
@@ -85,13 +87,14 @@ public class AddressControllerIntegration {
     @Test
     @DisplayName("Happy Test: Should Delete Address")
     @SqlGroup({
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.clearDB),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.insertPerson),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = SqlProvider.insertAddress),
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = SqlProvider.clearDB)
     })
     void testDeleteAddress() throws Exception {
             
-        Long id = 2L;
+        Long id = 14L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/address/delete/" + id))
             .andExpect(status().isNoContent());
