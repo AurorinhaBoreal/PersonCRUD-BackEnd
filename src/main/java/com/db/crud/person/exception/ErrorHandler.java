@@ -43,5 +43,9 @@ public class ErrorHandler {
     public ResponseEntity<String> handleErrorGetInfoException(GetInfoException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
-    
+
+    @ExceptionHandler(ValidateTokenException.class)
+    public ResponseEntity<String> handleErrorValidateTokenException(ValidateTokenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
 }
