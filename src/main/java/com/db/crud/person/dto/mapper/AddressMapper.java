@@ -20,6 +20,7 @@ public interface AddressMapper {
             .city(address.getCity())
             .uf(address.getUf())
             .country(address.getCountry())
+            .mainAddress(address.isMainAddress())
             .build();
 
     }
