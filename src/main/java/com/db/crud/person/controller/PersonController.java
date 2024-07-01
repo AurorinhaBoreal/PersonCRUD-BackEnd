@@ -40,7 +40,7 @@ public class PersonController {
     private PersonService personService;
     
     @GetMapping
-    public List<PersonResponse> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
+    public List<PersonResponse> listPageable(@PageableDefault(sort = {"firstName"}) Pageable pageable) {
         return personService.findAll(pageable);
     }
 
