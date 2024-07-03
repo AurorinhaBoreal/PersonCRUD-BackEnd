@@ -5,7 +5,6 @@ import java.time.Period;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.db.crud.person.dto.mapper.PersonMapper;
@@ -23,12 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PersonService {
 
-    @Autowired
-    PersonRepository personRepository;
-    
+    private final PersonRepository personRepository;
+
+    public PersonService(PersonRepository personRepository) {
+        this.personRepository = personRepository;
+    }
+
     public List<PersonResponse> findAll(Pageable pageable) {
         log.info("Searching for Persons in the Database...");
-        
+
         return personRepository.findAll(pageable).map(person -> {
             calcAge(person);
             return PersonMapper.personToDto(person);
@@ -44,14 +46,13 @@ public class PersonService {
 
     @Transactional
     public PersonResponse create(PersonRequest personDTO) {
-            Person person = PersonMapper.dtoToPerson(personDTO);
-            verifyCPF(person.getCpf());
-            personRepository.save(person);
-            calcAge(person);
-            log.info("Successfully created Person. Person: "+person);
+        Person person = PersonMapper.dtoToPerson(personDTO);
+        verifyCPF(person.getCpf());
+        personRepository.save(person);
+        calcAge(person);
+        log.info("Successfully created Person. Person: " + person);
 
-            PersonResponse responsePerson = PersonMapper.personToDto(person);
-            return responsePerson;
+        return PersonMapper.personToDto(person);
     }
 
     @Transactional
@@ -65,8 +66,7 @@ public class PersonService {
         personOriginal.setPhotoId(personUpdate.photoId());
         personRepository.save(personOriginal);
 
-        PersonResponse responsePerson = PersonMapper.personToDto(personOriginal);
-        return responsePerson;
+        return PersonMapper.personToDto(personOriginal);
     }
 
     public Person delete(String cpf) {
@@ -79,15 +79,14 @@ public class PersonService {
     public Integer calcAge(Person person) {
         LocalDate birthDate = person.getBirthDate();
         LocalDate currentDate = LocalDate.now();
-        
+
         int age = Period.between(birthDate, currentDate).getYears();
         person.setAge(age);
         return age;
     }
 
     public Person findPerson(String cpf) {
-        Person person = personRepository.findByCpf(cpf).orElseThrow(
-            () -> new ObjectNotFoundException("No Person Found with this cpf "+cpf));
-        return person;
+        return personRepository.findByCpf(cpf).orElseThrow(
+                () -> new ObjectNotFoundException("No Person Found with this cpf " + cpf));
     }
 }

@@ -10,7 +10,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -34,39 +33,36 @@ import com.db.crud.person.service.AddressService;
 import com.db.crud.person.service.PersonService;
 
 @ExtendWith(MockitoExtension.class)
-public class AddressServiceUnitary {
-    
+class AddressServiceUnitaryTests {
+
     @Mock
     AddressRepository addressRepository;
 
     @Mock
     PersonRepository personRepository;
-    
+
     @Mock
     PersonService personService;
 
     @InjectMocks
     AddressService addressService;
-    
+
     AddressRequest addressDTOValid = AddressFixture.AddressDTOValidFixture();
     AddressRequest addressDTOInvalid = AddressFixture.AddressDTOInvalidFixture();
-	Address addressEntityValid = AddressFixture.AddressEntityValidFixture();
-	Address addressEntityInvalid = AddressFixture.AddressEntityInvalidFixture();
+    Address addressEntityValid = AddressFixture.AddressEntityValidFixture();
+    Address addressEntityInvalid = AddressFixture.AddressEntityInvalidFixture();
 
     PersonRequest personDTOValid = PersonFixture.PersonDTOValidFixture();
     Person personEntityValid = PersonFixture.PersonEntityValidFixture();
-
-    List<Address> addresses = new ArrayList<>();
-
 
     @Test
     @DisplayName("Happy Testt: Should list addresses")
     void listAddress() {
         when(addressRepository.findAll()).thenReturn(List.of(addressEntityValid));
 
-        List<Address> addresses = addressService.list();
+        List<Address> addressesTest = addressService.list();
 
-        assertNotNull(addresses);
+        assertNotNull(addressesTest);
     }
 
     @Test
@@ -89,22 +85,22 @@ public class AddressServiceUnitary {
         NullPointerException thrown = assertThrows(NullPointerException.class, () -> {
             addressService.assignAddress(addressEntityInvalid, "654564523");
         });
-        
+
         assertEquals(
-            "Cannot invoke \"com.db.crud.person.entity.Person.setHasMainAddress(boolean)\" because \"person\" is null", 
-            thrown.getMessage());
+                "Cannot invoke \"com.db.crud.person.entity.Person.setHasMainAddress(boolean)\" because \"person\" is null",
+                thrown.getMessage());
     }
 
     @Test
     @DisplayName("Sad Test: Should thrown DuplicateMainAddressException of verifyMainAddress")
     void thrownDuplicateMainAddressException() {
-        DuplicateMainAddressException thrown = assertThrows(DuplicateMainAddressException.class, () -> {
-            when(personService.findPerson(anyString())).thenReturn(personEntityValid);
-            when(addressRepository.existsByPersonIdAndMainAddress(personEntityValid, true)).thenReturn(true);
+        when(personService.findPerson(anyString())).thenReturn(personEntityValid);
+        when(addressRepository.existsByPersonIdAndMainAddress(personEntityValid, true)).thenReturn(true);
 
+        DuplicateMainAddressException thrown = assertThrows(DuplicateMainAddressException.class, () -> {
             addressService.create(addressDTOInvalid, "37491502814");
         });
-        
+
         assertEquals("A Main Address Vinculated with this person already exists!", thrown.getMessage());
     }
 
@@ -114,7 +110,8 @@ public class AddressServiceUnitary {
         when(addressRepository.findByAddressIdentifier(anyLong())).thenReturn(addressEntityValid);
         addressEntityValid.setPersonId(personEntityValid);
 
-        AddressRequest addressUpdated = new AddressRequest(12L, "06453225","Estrada Maneirinha","112","Casa 3","Vizinhança Legau","São Paulo","RJ","Brasil", true);
+        AddressRequest addressUpdated = new AddressRequest(12L, "06453225", "Estrada Maneirinha", "112", "Casa 3",
+                "Vizinhança Legau", "São Paulo", "RJ", "Brasil", true);
         addressService.update(addressUpdated, 11L);
 
         assertNotNull(addressUpdated);
@@ -124,15 +121,15 @@ public class AddressServiceUnitary {
     @Test
     @DisplayName("Sad Test: Should thrown UpdateAddressException of update")
     void thrownUpdateAddressException() {
-        NullPointerException thrown = assertThrows(NullPointerException.class, () -> {
-            when(addressRepository.findByAddressIdentifier(anyLong())).thenReturn(addressEntityValid);
+        when(addressRepository.findByAddressIdentifier(anyLong())).thenReturn(addressEntityValid);
 
+        NullPointerException thrown = assertThrows(NullPointerException.class, () -> {
             addressService.update(addressDTOInvalid, 1L);
         });
-        
+
         assertEquals(
-            "Cannot invoke \"com.db.crud.person.entity.Person.setHasMainAddress(boolean)\" because \"person\" is null", 
-            thrown.getMessage());
+                "Cannot invoke \"com.db.crud.person.entity.Person.setHasMainAddress(boolean)\" because \"person\" is null",
+                thrown.getMessage());
     }
 
     @Test

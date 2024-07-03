@@ -5,9 +5,10 @@ import com.db.crud.person.dto.request.AddressRequest;
 import com.db.crud.person.entity.Address;
 
 public class AddressFixture {
-    
+
     public static AddressRequest AddressDTOValidFixture() {
-        return new AddressRequest(11L, "06845270", "Estrada Legal", "100", "Casa 43", "Bairro Assombrado", "Taboão da Serra", "SP", "Brasil", false);
+        return new AddressRequest(11L, "06845270", "Estrada Legal", "100", "Casa 43", "Bairro Assombrado",
+                "Taboão da Serra", "SP", "Brasil", false);
     }
 
     public static AddressRequest AddressDTOInvalidFixture() {
@@ -15,15 +16,10 @@ public class AddressFixture {
     }
 
     public static Address AddressEntityValidFixture() {
-        Address address = AddressMapper.dtoToAddress(AddressDTOValidFixture());
-
-        return address;
+        return AddressMapper.dtoToAddress(AddressDTOValidFixture());
     }
 
     public static Address AddressEntityInvalidFixture() {
-        Address address = AddressMapper.dtoToAddress(AddressDTOInvalidFixture());
-
-        return address;
+        return AddressMapper.dtoToAddress(AddressDTOInvalidFixture());
     }
 }
-

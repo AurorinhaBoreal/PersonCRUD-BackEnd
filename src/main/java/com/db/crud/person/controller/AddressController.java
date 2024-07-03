@@ -10,7 +10,6 @@ import com.db.crud.person.service.AddressService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,11 +25,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/address")
 @Slf4j
-public class AddressController {    
+public class AddressController {
 
-    @Autowired
-    private AddressService addressService;
-    
+    private final AddressService addressService;
+
+    public AddressController(AddressService addressService) {
+        this.addressService = addressService;
+    }
+
     @GetMapping
     public ResponseEntity<List<Address>> listAddress() {
         var body = addressService.list();
@@ -39,27 +41,29 @@ public class AddressController {
     }
 
     @PostMapping("/create/{personCpf}")
-    public ResponseEntity<AddressResponse> createAddress(@RequestBody @Valid AddressRequest address, @PathVariable("personCpf") String personCpf) {
+    public ResponseEntity<AddressResponse> createAddress(@RequestBody @Valid AddressRequest address,
+            @PathVariable("personCpf") String personCpf) {
 
         var body = addressService.create(address, personCpf);
 
-        log.info("Address Body: \\n"+address);
+        log.info("Address Body: \\n" + address);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
-        
+
     }
 
     @PatchMapping("/update/{addressId}")
-    public ResponseEntity<AddressResponse> updateAddress(@RequestBody @Valid AddressRequest address, @PathVariable("addressId") Long addressId) {
+    public ResponseEntity<AddressResponse> updateAddress(@RequestBody @Valid AddressRequest address,
+            @PathVariable("addressId") Long addressId) {
 
         var body = addressService.update(address, addressId);
-        
+
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
-    
+
     @DeleteMapping("/delete/{addressId}")
     public ResponseEntity<Void> deleteAddress(@PathVariable("addressId") Long addressId) {
-        
+
         addressService.delete(addressId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
