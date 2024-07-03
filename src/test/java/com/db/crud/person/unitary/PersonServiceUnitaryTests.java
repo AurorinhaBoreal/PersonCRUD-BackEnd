@@ -9,7 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +29,7 @@ import com.db.crud.person.repository.PersonRepository;
 import com.db.crud.person.service.PersonService;
 
 @ExtendWith(MockitoExtension.class)
-public class PersonServiceUnitary {
+class PersonServiceUnitaryTests {
 
 	@Mock
 	private PersonRepository personRepository;
@@ -38,23 +37,20 @@ public class PersonServiceUnitary {
 	@Mock
 	private PersonMapper personMapper;
 
-	
 	@InjectMocks
 	private PersonService personService;
-
-	
 
 	PersonRequest personDTOValid = PersonFixture.PersonDTOValidFixture();
 	PersonRequest personDTOInvalid = PersonFixture.PersonDTOInvalidFixture();
 	PersonRequest personDTOInvalidAge = PersonFixture.PersonDTOInvalidAgeFixture();
 	Person personEntityValid = PersonFixture.PersonEntityValidFixture();
 	Person personEntityInvalid = PersonFixture.PersonEntityInvalidFixture();
-	
+
 	@Test
-	@DisplayName("Happy Test: Should find a person in the Database through Id")
+	@DisplayName("Happy Test: Should find a person in the Database through id")
 	void findById() {
 
-		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid)); 
+		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid));
 
 		Person foundPerson = personRepository.findByCpf(personDTOValid.cpf()).get();
 
@@ -65,36 +61,36 @@ public class PersonServiceUnitary {
 	@DisplayName("Happy Test: Should find a person in the Database through CPF")
 	void findByCpf() {
 
-		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid)); 
+		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid));
 
 		Optional<Person> personFound = personRepository.findByCpf(personDTOValid.cpf());
 
 		assertNotNull(personFound);
 		assertEquals(personDTOValid.cpf(), personFound.get().getCpf());
 	}
-	
+
 	@Test
 	@DisplayName("Happy Test: Should insert a person in the Database")
 	void createPerson() {
 		when(personRepository.save(any())).thenReturn(personEntityValid);
-        
-        PersonResponse createPerson = personService.create(personDTOValid);
 
-        assertEquals(createPerson.firstName(), "Aurora");
-        assertEquals(createPerson.lastName(), "Rossi");
-        assertEquals(createPerson.cpf(), "05708051043");
-        assertEquals(createPerson.birthDate().toString(), "2004-05-14");
+		PersonResponse createPerson = personService.create(personDTOValid);
+
+		assertEquals("Aurora", createPerson.firstName());
+		assertEquals("Rossi", createPerson.lastName());
+		assertEquals("05708051043", createPerson.cpf());
+		assertEquals("2004-05-14", createPerson.birthDate().toString());
 	}
 
 	@Test
 	@DisplayName("Sad Test: Should thrown DuplicateCpfException in create")
 	void thrownDuplicateCpfException() {
-		DuplicateCpfException thrown = assertThrows(DuplicateCpfException.class, () -> {
-			when(personRepository.existsByCpf(anyString())).thenReturn(true);
+		when(personRepository.existsByCpf(anyString())).thenReturn(true);
 
+		DuplicateCpfException thrown = assertThrows(DuplicateCpfException.class, () -> {
 			personService.create(personDTOValid);
 		});
-	
+
 		assertEquals("Already exists a person with this cpf!", thrown.getMessage());
 	}
 
@@ -106,7 +102,7 @@ public class PersonServiceUnitary {
 		});
 
 		assertEquals(
-			"Cannot invoke \"java.time.LocalDate.until(java.time.chrono.ChronoLocalDate)\" because \"startDateInclusive\" is null", 
+				"Cannot invoke \"java.time.LocalDate.until(java.time.chrono.ChronoLocalDate)\" because \"startDateInclusive\" is null",
 				thrown.getMessage());
 	}
 
@@ -133,22 +129,22 @@ public class PersonServiceUnitary {
 		assertEquals("No Person Found with this cpf null", thrown.getMessage());
 	}
 
-	
 	@Test
 	@DisplayName("Happy Test: Should delete a specific person")
-	void deletePessoa() {
-  		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid)); 
+	void deletePerson() {
+		when(personRepository.findByCpf(personDTOValid.cpf())).thenReturn(Optional.of(personEntityValid));
 
-  		personService.delete(personDTOValid.cpf());
+		personService.delete(personDTOValid.cpf());
 
-  		verify(personRepository, times(1)).delete(personEntityValid);
+		verify(personRepository, times(1)).delete(personEntityValid);
 	}
 
 	@Test
 	@DisplayName("Sad Test: Should thrown ObjectNotFoundException of delete")
 	void thrownDeleteObjectNotFoundException() {
+		String cpf = personDTOInvalid.cpf();
 		ObjectNotFoundException thrown = assertThrows(ObjectNotFoundException.class, () -> {
-			personService.delete(personDTOInvalid.cpf());
+			personService.delete(cpf);
 		});
 
 		assertEquals("No Person Found with this cpf null", thrown.getMessage());

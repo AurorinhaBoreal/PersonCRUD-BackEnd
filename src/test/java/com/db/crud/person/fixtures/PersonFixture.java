@@ -7,7 +7,7 @@ import com.db.crud.person.dto.request.PersonRequest;
 import com.db.crud.person.entity.Person;
 
 public class PersonFixture {
-    
+
     public static PersonRequest PersonDTOValidFixture() {
         return new PersonRequest("Aurora", "Rossi", "05708051043", LocalDate.of(2004, 05, 14), 1);
     }
@@ -21,14 +21,10 @@ public class PersonFixture {
     }
 
     public static Person PersonEntityValidFixture() {
-        Person person = PersonMapper.dtoToPerson(PersonDTOValidFixture());
-        
-        return person;
+        return PersonMapper.dtoToPerson(PersonDTOValidFixture());
     }
 
     public static Person PersonEntityInvalidFixture() {
-        Person person = PersonMapper.dtoToPerson(PersonDTOInvalidFixture());
-
-        return person;
+        return PersonMapper.dtoToPerson(PersonDTOInvalidFixture());
     }
 }

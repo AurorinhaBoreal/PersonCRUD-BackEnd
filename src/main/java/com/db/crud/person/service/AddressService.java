@@ -2,7 +2,6 @@ package com.db.crud.person.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.db.crud.person.dto.mapper.AddressMapper;
@@ -14,7 +13,6 @@ import com.db.crud.person.exception.ObjectNotFoundException;
 import com.db.crud.person.exception.DuplicateAddressIdException;
 import com.db.crud.person.exception.DuplicateMainAddressException;
 import com.db.crud.person.repository.AddressRepository;
-import com.db.crud.person.repository.PersonRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -22,15 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class AddressService {
-    
-    @Autowired
-    AddressRepository addressRepository;
 
-    @Autowired
-    PersonRepository personRepository;
+    private final AddressRepository addressRepository;
+    private final PersonService personService;
 
-    @Autowired
-    PersonService personService;
+    public AddressService(AddressRepository addressRepository, PersonService personService) {
+        this.addressRepository = addressRepository;
+        this.personService = personService;
+    }
 
     public List<Address> list() {
         return addressRepository.findAll();
@@ -44,30 +41,28 @@ public class AddressService {
         assignAddress(address, personCpf);
 
         addressRepository.save(address);
-        AddressResponse responseAddress = AddressMapper.addressToDto(address);
-        return responseAddress;
+
+        return AddressMapper.addressToDto(address);
     }
 
     private boolean verifyAddressID(Long addressIdentifier) {
         if (addressRepository.existsByAddressIdentifier(addressIdentifier)) {
-            throw new DuplicateAddressIdException("This ID is already in use! Choose Another!");    
+            throw new DuplicateAddressIdException("This ID is already in use! Choose Another!");
         }
         return true;
     }
 
     public Address assignAddress(Address address, String personCpf) {
         Person person = personService.findPerson(personCpf);
-        
+
         if (address.isMainAddress()) {
             verifyDuplicateMainAddress(person, address.isMainAddress());
         }
-        
+
         person.setHasMainAddress(true);
         address.setPersonId(person);
         return address;
     }
-
-    
 
     @Transactional
     public AddressResponse update(AddressRequest addressUpdate, Long addressId) {
@@ -81,48 +76,43 @@ public class AddressService {
         addressOriginal.setUf(addressUpdate.uf());
         addressOriginal.setCountry(addressUpdate.country());
         addressOriginal.setMainAddress(addressUpdate.mainAddress());
-        
-        updateMainAddress(addressOriginal);
-        
-        addressRepository.save(addressOriginal);        
 
-        AddressResponse responseAddress = AddressMapper.addressToDto(addressOriginal);
-        return responseAddress;
+        updateMainAddress(addressOriginal);
+
+        addressRepository.save(addressOriginal);
+
+        return AddressMapper.addressToDto(addressOriginal);
     }
 
     public void delete(Long addressId) {
         Address address = findAddress(addressId);
-        
+
         deleteMainAddress(address);
         addressRepository.delete(address);
 
-        log.info("The Address was deleted. Id: "+addressId);
+        log.info("The Address was deleted. id: " + addressId);
     }
 
     public void verifyDuplicateMainAddress(Person person, boolean isMainAddress) {
-        
+
         boolean mainValidation = addressRepository.existsByPersonIdAndMainAddress(person, isMainAddress);
-            if (mainValidation) {
-                throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!");
-            }
+        if (mainValidation) {
+            throw new DuplicateMainAddressException("A Main Address Vinculated with this person already exists!");
+        }
     }
 
     public void deleteMainAddress(Address address) {
         Person person = address.getPersonId();
-        
+
         if (address.isMainAddress()) {
             person.setHasMainAddress(false);
         }
     }
-    
+
     public void updateMainAddress(Address address) {
         Person person = address.getPersonId();
 
-        if (address.isMainAddress()) {
-            person.setHasMainAddress(true);
-        } else {
-            person.setHasMainAddress(false);
-        }
+        person.setHasMainAddress(address.isMainAddress());
     }
 
     public Address findAddress(Long addressId) {
@@ -130,8 +120,8 @@ public class AddressService {
         try {
             address = addressRepository.findByAddressIdentifier(addressId);
         } catch (Exception e) {
-            new ObjectNotFoundException("No Address found with ID: " + addressId);   
+            throw new ObjectNotFoundException("No Address found with ID: " + addressId);
         }
-        return address;   
+        return address;
     }
 }
