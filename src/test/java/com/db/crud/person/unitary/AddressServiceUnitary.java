@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,6 @@ import com.db.crud.person.dto.response.AddressResponse;
 import com.db.crud.person.entity.Address;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.DuplicateMainAddressException;
-import com.db.crud.person.exception.ObjectNotFoundException;
 import com.db.crud.person.fixtures.AddressFixture;
 import com.db.crud.person.fixtures.PersonFixture;
 import com.db.crud.person.repository.AddressRepository;
@@ -146,14 +144,4 @@ public class AddressServiceUnitary {
 
         verify(addressRepository, times(1)).delete(addressEntityValid);
     }
-
-    // @Test
-    // @DisplayName("Sad Test: Should thrown NullPointerException of delete")
-    // void thrownNullPointerException() {
-    //     ObjectNotFoundException thrown = assertThrows(ObjectNotFoundException.class, () -> {
-    //         addressService.delete(null);
-    //     });
-        
-    //     assertEquals("No Address found with ID: null", thrown.getMessage());
-    // }
 }
