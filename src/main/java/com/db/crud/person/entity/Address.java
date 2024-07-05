@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Entity
 @Table(name = "tbl_address")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,11 +30,11 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
-    private Long Id;
+    private Long id;
 
     @Column(name = "identifier_id", columnDefinition = "BIGINT")
     private Long addressIdentifier;
-    
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
     @JsonBackReference
@@ -52,7 +51,7 @@ public class Address {
 
     @Column(length = 30)
     private String complement;
-    
+
     @Column(length = 20, nullable = false)
     private String neighborhood;
 

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @RestController
 @RequestMapping("/person")
 @Validated
@@ -36,11 +33,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin(origins = "http://localhost:5173/")
 public class PersonController {
 
-    @Autowired
-    private PersonService personService;
-    
+    private final PersonService personService;
+
+    public PersonController(PersonService personService) {
+        this.personService = personService;
+    }
+
     @GetMapping
-    public List<PersonResponse> listPageable(@PageableDefault(size=3, sort = {"firstName"}) Pageable pageable) {
+    public List<PersonResponse> listPageable(@PageableDefault(sort = { "firstName" }) Pageable pageable) {
         return personService.findAll(pageable);
     }
 
@@ -51,8 +51,9 @@ public class PersonController {
     }
 
     @PatchMapping("/update/{personCpf}")
-    public ResponseEntity<PersonResponse> updateUser(@RequestBody @Valid PersonRequest person, @PathVariable("personCpf") String personCpf) {
-        log.info("Updating Person: "+person);
+    public ResponseEntity<PersonResponse> updateUser(@RequestBody @Valid PersonRequest person,
+            @PathVariable("personCpf") String personCpf) {
+        log.info("Updating Person: " + person);
         var body = personService.update(person, personCpf);
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
@@ -62,5 +63,5 @@ public class PersonController {
         personService.delete(personCpf);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    
+
 }
