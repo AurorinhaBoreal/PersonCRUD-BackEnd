@@ -97,7 +97,6 @@ US's - EXTRA
  
 - CONTROLLERS:
 
-
   -> 🧑 /person                      # Lista as pessoas por meio de paginação
 
   -> 🧑 /person/create               # Permite inserir pessoas no banco
