@@ -1,9 +1,12 @@
 spring:
   datasource:
-    password: ${POSTGRES_PASSWORD}
-    url: ${DB_URL}
-    username: ${POSTGRES_USER}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    url: ${SPRING_DATASOURCE_URL}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update # Or "create-drop"
     show-sql: true

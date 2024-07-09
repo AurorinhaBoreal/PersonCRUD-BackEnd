@@ -1,9 +1,9 @@
 # 🙋🏠 CRUD PESSOA
 
 ## 🧑🏻‍💻 Executar
-  Este projeto utiliza o Docker para subir um banco PostgreSQL, por isso ao abrir o mesmo execute:
+  Este projeto utiliza o Docker para subir tanto a aplicação quanto o banco, por isso ao abrir o mesmo execute:
   
-  **docker compose up -d    # Sobe o container do PostgreSQL**
+  **docker compose up -d    # Sobe o container do BackEnd**
   
   Após isso pode iniciar o projeto normalmente. 
   
