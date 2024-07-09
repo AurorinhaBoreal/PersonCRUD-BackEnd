@@ -1,11 +1,11 @@
-FROM ubuntu:24.04 AS build
-# Update the system, install open-jdk and clear package caches
-RUN apt-get update && apt-get install openjdk-17-jdk -y && rm -rf /var/lib/apt/lists/*
+FROM gradle:8.4.0-jdk17 AS build
+WORKDIR /app
 COPY . .
+RUN chmod +x ./gradlew
 RUN ./gradlew bootJar --no-daemon
 
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk-slim AS release
 EXPOSE 8080
-COPY --from=build /build/libs/demo-1.jar app.jar
+COPY --from=build /app/build/libs/person-1.jar app.jar
 
-ENTRYPOINT [ "java", "jar", "app.jar" ]
+ENTRYPOINT [ "java", "-jar", "app.jar" ]
