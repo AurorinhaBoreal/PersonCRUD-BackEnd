@@ -4,9 +4,14 @@ import java.time.LocalDate;
 
 import com.db.crud.person.dto.mapper.PersonMapper;
 import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.request.UpdatePersonRequest;
 import com.db.crud.person.entity.Person;
 
 public class PersonFixture {
+
+    public static UpdatePersonRequest UpdatePersonDTOValid() {
+        return new UpdatePersonRequest("Aurora", "Rossi", LocalDate.of(2004, 05, 14), 1);
+    }
 
     public static PersonRequest PersonDTOValidFixture() {
         return new PersonRequest("Aurora", "Rossi", "05708051043", LocalDate.of(2004, 05, 14), 1);
