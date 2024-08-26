@@ -57,9 +57,9 @@ public class AddressService {
 
         if (address.isMainAddress()) {
             verifyDuplicateMainAddress(person, address.isMainAddress());
+            person.setHasMainAddress(true);
         }
 
-        person.setHasMainAddress(true);
         address.setPersonId(person);
         return address;
     }

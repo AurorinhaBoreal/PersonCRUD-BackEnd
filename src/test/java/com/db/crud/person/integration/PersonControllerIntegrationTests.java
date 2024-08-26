@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.db.crud.person.PersonApplication;
 import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.request.UpdatePersonRequest;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.fixtures.PersonFixture;
 import com.db.crud.person.fixtures.SqlProvider;
@@ -81,9 +82,9 @@ class PersonControllerIntegrationTests {
         })
         void testUpdateResponseJSON() throws Exception {
 
-                personDTORequest = PersonFixture.PersonDTOValidFixture();
+                UpdatePersonRequest updatePersonDTORequest = PersonFixture.UpdatePersonDTOValid();
 
-                json = mapper.writeValueAsString(personDTORequest);
+                json = mapper.writeValueAsString(updatePersonDTORequest);
 
                 String cpf = "30143518062";
 
@@ -91,9 +92,9 @@ class PersonControllerIntegrationTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(json))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.firstName").value(personDTORequest.firstName()));
+                                .andExpect(jsonPath("$.firstName").value(updatePersonDTORequest.firstName()));
 
-                Person updatePerson = personRepository.findByCpf(personDTORequest.cpf()).get();
+                Person updatePerson = personRepository.findByCpf(cpf).get();
                 assertEquals("Aurora", updatePerson.getFirstName());
         }
 

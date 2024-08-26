@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.db.crud.person.dto.mapper.PersonMapper;
 import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.request.UpdatePersonRequest;
 import com.db.crud.person.dto.response.PersonResponse;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.DuplicateCpfException;
@@ -43,6 +44,7 @@ class PersonServiceUnitaryTests {
 	PersonRequest personDTOValid = PersonFixture.PersonDTOValidFixture();
 	PersonRequest personDTOInvalid = PersonFixture.PersonDTOInvalidFixture();
 	PersonRequest personDTOInvalidAge = PersonFixture.PersonDTOInvalidAgeFixture();
+	UpdatePersonRequest updatePersonDTOValid = PersonFixture.UpdatePersonDTOValid();
 	Person personEntityValid = PersonFixture.PersonEntityValidFixture();
 	Person personEntityInvalid = PersonFixture.PersonEntityInvalidFixture();
 
@@ -111,7 +113,7 @@ class PersonServiceUnitaryTests {
 	void updatePerson() {
 		when(personRepository.findByCpf(personEntityInvalid.getCpf())).thenReturn(Optional.of(personEntityInvalid));
 
-		PersonResponse personUpdated = personService.update(personDTOValid, personEntityInvalid.getCpf());
+		PersonResponse personUpdated = personService.update(updatePersonDTOValid, personEntityInvalid.getCpf());
 
 		assertNotNull(personUpdated);
 		assertEquals("Aurora", personUpdated.firstName());
@@ -123,7 +125,7 @@ class PersonServiceUnitaryTests {
 	@DisplayName("Sad Test: Should thrown ObjectNotFoundException of update")
 	void thrownUpdateObjectNotFoundException() {
 		ObjectNotFoundException thrown = assertThrows(ObjectNotFoundException.class, () -> {
-			personService.update(personDTOValid, null);
+			personService.update(updatePersonDTOValid, null);
 		});
 
 		assertEquals("No Person Found with this cpf null", thrown.getMessage());

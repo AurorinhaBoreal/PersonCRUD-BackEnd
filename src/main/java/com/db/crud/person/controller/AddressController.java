@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/address")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:5173/", "https://person-front.onrender.com/"})
 public class AddressController {
 
     private final AddressService addressService;
