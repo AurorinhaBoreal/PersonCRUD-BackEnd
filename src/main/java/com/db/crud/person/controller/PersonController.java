@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/person")
 @Validated
 @Slf4j
-@CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:5173/", "https://person-front.onrender.com/"})
+@CrossOrigin(origins = {"http://localhost:3000/", "http://localhost:5173/", "https://person-front.onrender.com"})
 public class PersonController {
 
     private final PersonService personService;
