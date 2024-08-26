@@ -3,6 +3,7 @@ package com.db.crud.person.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.request.UpdatePersonRequest;
 import com.db.crud.person.dto.response.PersonResponse;
 import com.db.crud.person.service.PersonService;
 
@@ -43,6 +44,12 @@ public class PersonController {
     public List<PersonResponse> listPageable(@PageableDefault(sort = { "firstName" }) Pageable pageable) {
         return personService.findAll(pageable);
     }
+    
+    @GetMapping("/{personCpf}")
+    public ResponseEntity<PersonResponse> specificPerson(@PathVariable("personCpf") String personCpf) {
+        return ResponseEntity.status(HttpStatus.OK).body(personService.findSpecificPerson(personCpf));
+    }
+    
 
     @PostMapping("/create")
     public ResponseEntity<PersonResponse> createUser(@RequestBody @Valid PersonRequest personDTO) {
@@ -51,8 +58,7 @@ public class PersonController {
     }
 
     @PatchMapping("/update/{personCpf}")
-    public ResponseEntity<PersonResponse> updateUser(@RequestBody @Valid PersonRequest person,
-            @PathVariable("personCpf") String personCpf) {
+    public ResponseEntity<PersonResponse> updateUser(@RequestBody @Valid UpdatePersonRequest person, @PathVariable("personCpf") String personCpf) {
         log.info("Updating Person: " + person);
         var body = personService.update(person, personCpf);
         return ResponseEntity.status(HttpStatus.OK).body(body);

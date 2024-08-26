@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.db.crud.person.dto.mapper.PersonMapper;
 import com.db.crud.person.dto.request.PersonRequest;
+import com.db.crud.person.dto.request.UpdatePersonRequest;
 import com.db.crud.person.dto.response.PersonResponse;
 import com.db.crud.person.entity.Person;
 import com.db.crud.person.exception.DuplicateCpfException;
@@ -37,6 +38,12 @@ public class PersonService {
         }).toList();
     }
 
+    public PersonResponse findSpecificPerson(String cpf) {
+        Person person = personRepository.findByCpf(cpf).get();
+        calcAge(person);
+        return PersonMapper.personToDto(person);
+    }
+
     private boolean verifyCPF(String cpf) {
         if (personRepository.existsByCpf(cpf)) {
             throw new DuplicateCpfException("Already exists a person with this cpf!");
@@ -56,12 +63,11 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonResponse update(PersonRequest personUpdate, String cpf) {
+    public PersonResponse update(UpdatePersonRequest personUpdate, String cpf) {
         Person personOriginal = findPerson(cpf);
 
         personOriginal.setFirstName(personUpdate.firstName());
         personOriginal.setLastName(personUpdate.lastName());
-        personOriginal.setCpf(personUpdate.cpf());
         personOriginal.setBirthDate(personUpdate.birthDate());
         personOriginal.setPhotoId(personUpdate.photoId());
         personRepository.save(personOriginal);
