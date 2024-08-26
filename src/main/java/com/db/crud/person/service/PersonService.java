@@ -39,7 +39,7 @@ public class PersonService {
     }
 
     public PersonResponse findSpecificPerson(String cpf) {
-        Person person = personRepository.findByCpf(cpf).get();
+        Person person = findPerson(cpf);
         calcAge(person);
         return PersonMapper.personToDto(person);
     }
